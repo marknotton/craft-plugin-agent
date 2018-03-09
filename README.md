@@ -2,42 +2,106 @@
 
 Query the server-side information from the users agent data.
 
-![Screenshot](resources/img/plugin-logo.png)
+<img src="http://i.imgur.com/klRglRT.png" alt="Agent" align="left" height="60" />
 
-## Requirements
+## Table of Contents
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+- [Dependencies](#dependencies)
+- [Agent](#agent)
+- [Is](#is)
+- [Data](#data)
+- [Full](#full)
+- [Local](#local)
+- [Session](#session)
 
-## Installation
+## Dependencies
 
-To install the plugin, follow these instructions.
+- [Agent by Jens Segers](https://github.com/jenssegers/agent)
+- [Mobile Detect](http://mobiledetect.net/)
 
-1. Open your terminal and go to your Craft project:
+## Agent
 
-        cd /path/to/project
+If you want to use some of the native functionality from [Agent](https://github.com/jenssegers/agent) you can simply query the global agent instance:
 
-2. Then tell Composer to load the plugin:
+```
+{{ craft.agent.agent.isPhone() }}
+```
 
-        composer require craft-plugin-agent/agent
+## Is
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Agent.
+Perform a number of checks to determine wether the users browser type is a match. Returns ```boolean```.
 
-## Agent Overview
+#### Example 1:
+Returns true if current browser is either 'IE, Edge, or Firefox'
+```
+{{ craft.agent.is('ie edge firefox') }}
+```
 
--Insert text here-
+#### Example 2:
+Exactly the same as example one, but demonstrates you can pass in as many arguments as you like. Each argument is handled as an "or" not an "and".
+```
+{{ craft.agent.is('ie', 'edge', 'firefox') }}
+```
 
-## Configuring Agent
+#### Example 3:
+Returns true if current browser is greater than IE 9
+```
+{{ craft.agent.is('ie 9 >') }}
+```
 
--Insert text here-
+#### Example 4:
+Returns true if current browser is greater or equal to IE 9
+```
+{{ craft.agent.is('ie => 9') }}
+```
 
-## Using Agent
+#### Example 5:
+Returns true if current browser is either, IE version 9 or 10, Chrome version 50 or above, or Firefox any version
+```
+{{ craft.agent.is('ie 9 10', 'chrome > 49', 'firefox') }}
+```
 
--Insert text here-
+----
+## Data
 
-## Agent Roadmap
+Echos out a data attribute with the browser name and version number. Ideal for querying via Javascript or CSS
 
-Some things to do, and ideas for potential features:
+#### Example:
+```
+{{ craft.agent.data|default }}
+```
 
-* Release it
+#### Example Output:
+```html
+data-browser="chrome 52"
+```
 
-Brought to you by [Mark Notton](https://github.com/marknotton/craft-plugin-agent)
+#### Example Output: jQuery Usage
+```js
+if ( $('html[data-browser^=chrome]').length ) {...}
+```
+
+#### Example Output: CSS Usage
+```css
+html[data-browser^=chrome] {...}
+```
+
+----
+## Full
+
+Simply returns the name and version of the users browser.
+
+Returns browser name and version number in an array
+```
+{{ craft.agent.full }}
+```
+
+Returns browser name
+```
+{{ craft.agent.full.name }}
+```
+
+Returns version number
+```
+{{ craft.agent.full.version }}
+```
