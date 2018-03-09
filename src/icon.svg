@@ -1,0 +1,11 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-47 170.9 500 500" style="enable-background:new -47 170.9 500 500;" xml:space="preserve">
+
+	<path id="background" fill="#FFC83B" d="M453.1,238.5c0-37.3-30.2-67.6-67.6-67.6H20.6c-37.3,0-67.7,30.2-67.7,67.6v364.8 c0,37.3,30.2,67.6,67.6,67.6h364.8c37.3,0,67.6-30.2,67.6-67.6V238.5H453.1z"/>
+
+	<g id="icon" fill="#FFFFFF">
+
+		<path id="browser" d="M365,270.9H41c-9.9,0-18,8.1-18,18v264c0,9.9,8.1,18,18,18h324c9.9,0,18-8.1,18-18v-264 C383,278.9,374.9,270.9,365,270.9z M101,294.9h36v36h-36V294.9z M47,294.9h36v36H47V294.9z M359,546.9H47v-192h312V546.9z  M359,330.9H155v-36h204V330.9z"/>
+
+	</g>
+	
+</svg>
