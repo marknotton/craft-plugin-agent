@@ -2,7 +2,6 @@
     "name": "marknotton/agent",
     "description": "Query the server-side information from the users agent data.",
     "type": "craft-plugin",
-    "version": "1.0.1",
     "keywords": [
         "craft",
         "cms",
