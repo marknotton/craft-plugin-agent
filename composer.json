@@ -1,5 +1,5 @@
 {
-    "name": "marknotton/craftcms/agent",
+    "name": "marknotton/agent",
     "description": "Query the server-side information from the users agent data.",
     "type": "craft-plugin",
     "version": "1.0.2",
@@ -38,8 +38,8 @@
         "hasCpSection": false,
         "changelogUrl": "https://github.com/marknotton/craft-plugin-agent/blob/master/CHANGELOG.md",
         "components": {
-          "agentService": "marknotton\\craftcms\\agent\\services\\AgentService"
+          "agentService": "marknotton\\agent\\services\\AgentService"
         },
-        "class": "marknotton\\craftcms\\agent\\Agent"
+        "class": "marknotton\\agent\\Agent"
     }
 }
