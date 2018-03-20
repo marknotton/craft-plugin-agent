@@ -119,7 +119,7 @@ MobileDetect recently added a `version` method that can get the version number f
 
 *Note, the version method is still in beta, so it might not return the correct result.*
 
-### Magic is-method
+## Magic is-method
 
 Magic method that does the same as the previous `is()` method:
 
@@ -215,7 +215,7 @@ Get the robot name.
 
 ## Extra
 
-All Agent service methods are accessible without the need to define 'craft.'. So all of the functions above can be called something like this instead:
+All Agent service methods are accessible without the need to define 'craft.'. So all of the functions above can be called like this too:
 
 ```
 {{ agent.browser() }}
