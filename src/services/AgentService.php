@@ -60,7 +60,7 @@ class AgentService extends Component
 	}
 
   // ... Returns true if current browser is EITHER, IE version 9 or 10, Chrome version 50 or above, or Firefox any version
-  public function is() {
+  public function isBrowser() {
 
     // Atleast one browser sting arugment should be passed
     if ( func_num_args() < 1 ){
