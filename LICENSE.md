@@ -1,4 +1,4 @@
-Copyright (c) Mark Notton
+Copyright © Mark Notton
 
 The MIT License (MIT)
 
