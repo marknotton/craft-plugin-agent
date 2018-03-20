@@ -1,4 +1,4 @@
-<img src="http://i.imgur.com/klRglRT.png" alt="Agent" align="left" height="60" />
+<img src="https://i.imgur.com/RcNoQQa.png" alt="Agent" align="left" height="60" />
 
 # Agent plugin for Craft CMS 3.x
 
