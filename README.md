@@ -1,31 +1,32 @@
+<img src="http://i.imgur.com/klRglRT.png" alt="Agent" align="left" height="60" />
+
 # Agent plugin for Craft CMS 3.x
 
 Query the server-side information from the users agent data.
 
-<img src="http://i.imgur.com/klRglRT.png" alt="Agent" align="left" height="60" />
-
 ## Table of Contents
 
 - [Dependencies](#dependencies)
-- [Agent](#agent)
 - [Is](#is)
 - [Data](#data)
 - [Full](#full)
-- [Local](#local)
-- [Session](#session)
+- [Browser/platform version](#browserplatform-version)
+- [Magic is-method](#magic-is-method)
+- [Mobile Detection](#mobile-detection)
+- [Match User Agent](#match-user-agent)
+- [Accept Languages](#accept-languages)
+- [Device Name](#device-name)
+- [Desktop Detection](#desktop-detection)
+- [Phone Detection](#phone-detection)
+- [Robot Detection](#robot-detection)
+- [Robot Name](#robot-name)
+- [Extra](#extra)
 
 ## Credit
 
 - [Agent by Jens Segers](https://github.com/jenssegers/agent)
 - [Mobile Detect](http://mobiledetect.net/)
 
-## Agent
-
-If you want to use some of the native functionality from [Agent](https://github.com/jenssegers/agent) you can simply query the global agent instance:
-
-```
-{{ craft.agent.agent.isPhone() }}
-```
 
 ## Is
 
@@ -104,6 +105,20 @@ Returns version number
 {{ craft.agent.full.version }}
 ```
 
+## Browser/platform version
+
+MobileDetect recently added a `version` method that can get the version number for components. To get the browser or platform version you can use:
+
+```
+{% set browser = craft.agent.browser() }}
+{% set version = craft.agent.version($browser) }}
+
+{% set platform = craft.agent.platform() }}
+{% set version = craft.agent.version($platform) }}
+```
+
+*Note, the version method is still in beta, so it might not return the correct result.*
+
 ### Magic is-method
 
 Magic method that does the same as the previous `is()` method:
@@ -130,9 +145,6 @@ Search the user agent with a regular expression:
 ```
 {{ craft.agent.match('regexp') }}
 ```
-
-Additional Functionality
-------------------------
 
 ## Accept languages
 
@@ -177,7 +189,7 @@ Check if the user is using a desktop device.
 
 *This checks if a user is not a mobile device, tablet or robot.*
 
-### Phone detection
+## Phone detection
 
 Check if the user is using a phone device.
 
@@ -200,20 +212,6 @@ Get the robot name.
 ```
 {{ craft.agent.robot() }}
 ```
-
-## Browser/platform version
-
-MobileDetect recently added a `version` method that can get the version number for components. To get the browser or platform version you can use:
-
-```
-{% set browser = craft.agent.browser() }}
-{% set version = craft.agent.version($browser) }}
-
-{% set platform = craft.agent.platform() }}
-{% set version = craft.agent.version($platform) }}
-```
-
-*Note, the version method is still in beta, so it might not return the correct result.*
 
 ## Extra
 
