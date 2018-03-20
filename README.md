@@ -6,7 +6,8 @@ Query the server-side information from the users agent data.
 
 ## Table of Contents
 
-- [Dependencies](#dependencies)
+- [Credit](#dependencies)
+- [Installation](#installation)
 - [Is](#is)
 - [Data](#data)
 - [Full](#full)
@@ -27,6 +28,21 @@ Query the server-side information from the users agent data.
 - [Agent by Jens Segers](https://github.com/jenssegers/agent)
 - [Mobile Detect](http://mobiledetect.net/)
 
+## Installation
+
+Via compsoer:
+
+```
+composer require marknotton/agent
+```
+
+Manually in your compsoer.json:
+
+```
+"require": {
+  "marknotton/agent": "^1.0.3"
+}
+```
 
 ## Is
 
