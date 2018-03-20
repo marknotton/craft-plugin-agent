@@ -64,7 +64,7 @@ Returns true if current browser is either, IE version 9 or 10, Chrome version 50
 
 ## Data
 
-Returns a string in the format of data attributes containing the browser name and version number, platform and Operating system. Ideal for querying via Javascript or CSS
+Returns a string in the format of data attributes containing the browser name and version number, platform and device type. Ideal for querying via Javascript or CSS
 
 #### Example:
 ```
@@ -160,7 +160,7 @@ Get the browser's accept languages. Example:
 Get the device name, if mobile. (iPhone, Nexus, AsusTablet, ...)
 
 ```
-{{ craft.agent->device() }}
+{{ craft.agent.device() }}
 ```
 
 ## Operating system name

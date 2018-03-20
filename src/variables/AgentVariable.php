@@ -22,7 +22,7 @@ use Craft;
 class AgentVariable
 {
   // Refer to all functions in the services class
-  public function __call($function, $args) {
-    return Agent::$plugin->agentService->$function($args);
+  public function __call($method, $args) {
+    return call_user_func_array( array(Agent::$plugin->agentService, $method), $args );
   }
 }

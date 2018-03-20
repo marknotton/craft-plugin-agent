@@ -183,7 +183,7 @@ class AgentService extends Component
   }
 
   // Use Jenssegers agent methods as fallbacks should they not be defined in this services class
-  public function __call($function, $args) {
-    return $this->agent->$function($args);
+  public function __call($method, $args) {
+    return call_user_func_array( array($this->agent, $method), $args );
   }
 }
