@@ -23,7 +23,6 @@ use craft\base\Component;
  */
 class AgentService extends Component
 {
-
   public $agent;    // Global variable for easy access for the additional options: https://github.com/jenssegers/agent
   public $name;     // Global variable for easy access: {{ browser.name }}
   public $version;  // Global variable for easy access: {{ browser.version }}
@@ -181,5 +180,10 @@ class AgentService extends Component
     $this->agent = new JenssegersAgent();
     $this->name = strtolower($this->agent->browser());
     $this->version = floor($this->agent->version($this->agent->browser()));
+  }
+
+  // Use Jenssegers agent methods as fallbacks should they not be defined in this services class
+  public function __call($function, $args) {
+    return $this->agent->$function($args);
   }
 }

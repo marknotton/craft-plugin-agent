@@ -21,22 +21,8 @@ use Craft;
  */
 class AgentVariable
 {
-  // Returns array
-  public function full() {
-    return Agent::$plugin->agentService->full();
-  }
-
-  // Returns string
-  public function data() {
-    return Agent::$plugin->agentService->data();
-  }
-
-
-	public function session() {
-    return Agent::$plugin->agentService->session();
-  }
-
-  public function is($agent = null, $version = null, $condition = null) {
-    return Agent::$plugin->agentService->is($agent, $version, $condition);
+  // Refer to all functions in the services class
+  public function __call($function, $args) {
+    return Agent::$plugin->agentService->$function($args);
   }
 }

@@ -63,6 +63,9 @@ class Agent extends Plugin
             'agentService' => \marknotton\agent\services\AgentService::class,
         ]);
 
+        $twig = Craft::$app->view->getTwig(null, ['safe_mode' => false]);
+        $twig->addGlobal('agent',  Agent::$plugin->agentService);
+
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
