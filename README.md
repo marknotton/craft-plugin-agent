@@ -248,3 +248,8 @@ All Agent service methods are accessible without the need to define 'craft.'. So
 ```
 {{ agent.browser() }}
 ```
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/marknotton/craft-plugin-agent/badge.svg?style=beer-square)](https://beerpay.io/marknotton/craft-plugin-agent)  [![Beerpay](https://beerpay.io/marknotton/craft-plugin-agent/make-wish.svg?style=flat-square)](https://beerpay.io/marknotton/craft-plugin-agent?focus=wish)
