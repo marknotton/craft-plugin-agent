@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 - The browser name to "Internet Explorer" if "IE" is found.
-- The way data is returned. No longer echos, but instead used the appropriate template helper.
+- The way data is returned. No longer echos, but instead uses the appropriate template helper.
 
 ## 1.0.0 - 2018-03-09
 ### Added
