@@ -15,6 +15,7 @@ use Jenssegers\Agent\Agent as JenssegersAgent;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\Template;
 
 /**
  * @author    Mark Notton
@@ -32,7 +33,7 @@ class AgentService extends Component
     $browser = $this->agent->browser();
 
     $agent = [
-      "name" => $browser,
+      "name" => $browser == 'IE' ? "Internet Explorer" : $browser,
       "version" => $this->agent->version($browser),
     ];
 
@@ -52,7 +53,7 @@ class AgentService extends Component
     else { $device = null; }
     if (!is_null($device)) { $data .= ' data-device="'.strtolower($device).'" '; }
 
-    echo $data;
+    return Template::raw($data);
   }
 
 	public function session() {
@@ -60,7 +61,7 @@ class AgentService extends Component
 	}
 
   // ... Returns true if current browser is EITHER, IE version 9 or 10, Chrome version 50 or above, or Firefox any version
-  public function isBrowser() {
+  public function is() {
 
     // Atleast one browser sting arugment should be passed
     if ( func_num_args() < 1 ){
