@@ -121,17 +121,18 @@ class Agent {
   }
 
   get notch () {
+
     if (window.device.orientation == 'landscape') {
       // If the iPhoneX is rotated left 90 degrees, assume the notch exists on the left
-      body.removeClass('notch-right').addClass('notch-left')
+      this.element.setAttribute("data-notch", 'left')
       window.device.notch = 'left'
     } else if (window.device.orientation == 'upside-down landscape') {
       // If the iPhoneX is rotated right 90 degrees, assume the notch exists on the right
-      body.removeClass('notch-left').addClass('notch-right')
+      this.element.setAttribute("data-notch", 'right')
       window.device.notch = 'right'
     } else {
       // If the iPhoneX is not landscape at all, remove both classes
-      body.removeClass('notch-right notch-left')
+      this.element.removeAttribute("data-notch")
       window.device.notch = false
     }
     return window.device.notch;
@@ -149,7 +150,7 @@ class Agent {
         window.device.orientation = $this.orientation.check;
 
         // Update the data-orientation on the HTML element
-        this.element.attr('data-orientation', window.device.orientation)
+        $this.element.setAttribute("data-orientation", window.device.orientation)
 
         // If the device is an iPhoneX do a check for 'the notch' and it's position
         if (window.device.iphoneX) {
