@@ -59,6 +59,8 @@ class Agent extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        Craft::setAlias('@agent', $this->getBasePath());
+
         $this->setComponents([
             'agentService' => \marknotton\agent\services\AgentService::class,
         ]);
