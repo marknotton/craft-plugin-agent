@@ -1,3 +1,4 @@
+
 <img src="https://i.imgur.com/RcNoQQa.png" alt="Agent" align="left" height="60" />
 
 # Agent plugin for Craft CMS 3.x
@@ -9,7 +10,6 @@ Query the server-side information from the users agent data.
 - [Credit](#dependencies)
 - [Installation](#installation)
 - [Is](#is)
-- [Is Browser](#is-browser)
 - [Data](#data)
 - [Full](#full)
 - [Browser/platform version](#browserplatform-version)
@@ -23,6 +23,7 @@ Query the server-side information from the users agent data.
 - [Robot Detection](#robot-detection)
 - [Robot Name](#robot-name)
 - [Extra](#extra)
+- [Agent.js](#agent.js)
 
 ## Credit
 
@@ -37,62 +38,51 @@ Via compsoer:
 composer require marknotton/agent
 ```
 
-Manually in your compsoer.json:
+Or manually in your compsoer.json:
 
 ```
 "require": {
-  "marknotton/agent": "^1.0.3"
+  "marknotton/agent": "^1.0.5"
 }
 ```
 
-### Is?
-
-Check for a certain property in the user agent.
-
-```
-{{ craft.agent.is('Windows') }}
-{{ craft.agent.is('Firefox') }}
-{{ craft.agent.is('iPhone') }}
-{{ craft.agent.is('OS X') }}
-```
-
-## Is Browser
+## Is
 
 Perform a number of checks to determine wether the users browser type is a match. Returns ```boolean```.
 
 #### Example 1:
 Returns true if current browser is either 'IE, Edge, or Firefox'
 ```
-{{ craft.agent.isBrowser('ie edge firefox') }}
+{{ craft.agent.is('ie edge firefox') }}
 ```
 
 #### Example 2:
 Exactly the same as example one, but demonstrates you can pass in as many arguments as you like. Each argument is handled as an "or" not an "and".
 ```
-{{ craft.agent.isBrowser('ie', 'edge', 'firefox') }}
+{{ craft.agent.is('ie', 'edge', 'firefox') }}
 ```
 
 #### Example 3:
 Returns true if current browser is greater than IE 9
 ```
-{{ craft.agent.isBrowser('ie 9 >') }}
+{{ craft.agent.is('ie 9 >') }}
 ```
 
 #### Example 4:
 Returns true if current browser is greater or equal to IE 9
 ```
-{{ craft.agent.isBrowser('ie => 9') }}
+{{ craft.agent.is('ie => 9') }}
 ```
 
 #### Example 5:
 Returns true if current browser is either, IE version 9 or 10, Chrome version 50 or above, or Firefox any version
 ```
-{{ craft.agent.isBrowser('ie 9 10', 'chrome > 49', 'firefox') }}
+{{ craft.agent.is('ie 9 10', 'chrome > 49', 'firefox') }}
 ```
 
 ## Data
 
-Returns a string in the format of data attributes containing the browser name and version number, platform and device type. Ideal for querying via Javascript or CSS
+Returns a string in the format of data attributes containing the browser name and version number, platform and device type. Ideal for querying via Javascript or CSS. See the included agent.js file for more information.
 
 #### Example:
 ```
@@ -139,10 +129,10 @@ MobileDetect recently added a `version` method that can get the version number f
 
 ```
 {% set browser = craft.agent.browser() }}
-{% set version = craft.agent.version(browser) }}
+{% set version = craft.agent.version($browser) }}
 
 {% set platform = craft.agent.platform() }}
-{% set version = craft.agent.version(platform) }}
+{% set version = craft.agent.version($platform) }}
 ```
 
 *Note, the version method is still in beta, so it might not return the correct result.*
@@ -249,7 +239,50 @@ All Agent service methods are accessible without the need to define 'craft.'. So
 {{ agent.browser() }}
 ```
 
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
+## Agent.js
 
-[![Beerpay](https://beerpay.io/marknotton/craft-plugin-agent/badge.svg?style=beer-square)](https://beerpay.io/marknotton/craft-plugin-agent)  [![Beerpay](https://beerpay.io/marknotton/craft-plugin-agent/make-wish.svg?style=flat-square)](https://beerpay.io/marknotton/craft-plugin-agent?focus=wish)
+Agent comes complete with a Javascript class to help make it easier to query some of the user agent data.
+
+You can include the agent.js like this:
+
+```js
+{% do view.registerJsFile(
+  craft.app.assetManager.getPublishedUrl('@agent/assets/scripts/agent.js', true),
+  {'position' : constant('\\yii\\web\\View::POS_HEAD')}
+)%}
+```
+
+You can initialise it like this in your own script:
+
+```js
+let agent = new Agent();
+```
+
+By default, we assume your using the Agent data function is defined in your HTML tag via Twig:
+
+```html
+<html {{ craft.agent.data|default }}>
+```
+
+If you're using it on another tag, you'll need to define the element like this:
+
+```js
+let agent = new Agent($('body'));
+```
+
+Now you have access to these methods:
+
+
+| Function | Autoload | Return Example | Description |
+| -- | -- | -- | -- | -- |
+| agent.browser | true | ```{name: "chrome", version: "66"}``` | Gets the users browser name and version number |
+| agent.viewport | true | ```{width: 1345, height: 1321}``` | Gets the users viewport width and height |
+| agent.screen | true | ```{pixelWidth: 2560, pixelHeight: 1440}``` | Gets the users device resolution. This takes into account condensed pixels |
+| agent.platform | true | ```osx``` | Gets the users platform type |
+| agent.mobile | true | ```true``` | Checks if the user is on a mobile device |
+| agent.tablet | true | ```true``` | Checks if the user is on a tablet device |
+| agent.desktop | true | ```true``` | Checks if the user is on a desktop |
+| agent.orientation | false | ```landscape``` | Checks the orientation of the users display/device |
+| agent.notch | false | ```left``` | Checks if the users device has a notch, and tells you what side it's on |
+
+Auto loaded methods are called when the Agent Class is initialised. They are then pushed directly to the DOM window. So all autoloaded methods are added or merged to existing objects. You can disable this by passing in `false` as argument.
