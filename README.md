@@ -274,7 +274,7 @@ Now you have access to these methods:
 
 
 | Function | Return Example | Description |
-| -- |  -- | -- |
+| -- |  -- | -- | -- |
 | agent.browser | ```{name: "chrome", version: "66"}``` | Gets the users browser name and version number |
 | agent.viewport | ```{width: 1345, height: 1321}``` | Gets the users viewport width and height |
 | agent.screen | ```{pixelWidth: 2560, pixelHeight: 1440}``` | Gets the users device resolution. This takes into account condensed pixels |

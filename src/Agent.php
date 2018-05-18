@@ -1,17 +1,17 @@
 <?php
 /**
- * Agent plugin for Craft CMS 3.x
- *
- * Query the server-side information from the users agent data.
- *
- * @link      https://github.com/marknotton/craft-plugin-agent
- * @copyright Copyright (c) 2018 Mark Notton
- */
+* Agent plugin for Craft CMS 3.x
+*
+* Query the server-side information from the users agent data.
+*
+* @link      https://github.com/marknotton/craft-plugin-agent
+* @copyright Copyright (c) 2018 Mark Notton
+*/
 
 namespace marknotton\agent;
 
-use marknotton\agent\services\AgentService;
-use marknotton\agent\variables\AgentVariable;
+use marknotton\agent\services\Services;
+use marknotton\agent\variables\Variables;
 
 use Craft;
 use craft\base\Plugin;
@@ -21,83 +21,44 @@ use craft\web\twig\variables\CraftVariable;
 
 use yii\base\Event;
 
-/**
- * Class Agent
- *
- * @author    Mark Notton
- * @package   Agent
- * @since     1.0.0
- *
- * @property  AgentServiceService $agentService
- */
-class Agent extends Plugin
-{
-    // Static Properties
-    // =========================================================================
 
-    /**
-     * @var Agent
-     */
-    public static $plugin;
+class Agent extends Plugin {
 
-    // Public Properties
-    // =========================================================================
+  public static $plugin;
 
-    /**
-     * @var string
-     */
-    public $schemaVersion = '1.0.0';
+  public $schemaVersion = '1.0.6';
 
-    // Public Methods
-    // =========================================================================
+  public function init() {
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        self::$plugin = $this;
+    parent::init();
+    self::$plugin = $this;
 
-        Craft::setAlias('@agent', $this->getBasePath());
+    Craft::setAlias('@agent', $this->getBasePath());
 
-        $this->setComponents([
-            'agentService' => \marknotton\agent\services\AgentService::class,
-        ]);
+    $this->setComponents([
+      'services' => \marknotton\agent\services\Services::class,
+    ]);
 
-        $twig = Craft::$app->view->getTwig(null, ['safe_mode' => false]);
-        $twig->addGlobal('agent',  Agent::$plugin->agentService);
+    $twig = Craft::$app->view->getTwig(null, ['safe_mode' => false]);
+    $twig->addGlobal('agent', Agent::$plugin->services);
 
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            function (Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('agent', AgentVariable::class);
-            }
-        );
+    Event::on(
+      CraftVariable::class,
+      CraftVariable::EVENT_INIT,
+      function (Event $event) {
+        $variable = $event->sender;
+        $variable->set('agent', Variables::class);
+      }
+    );
 
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                }
-            }
-        );
-
-        Craft::info(
-            Craft::t(
-                'agent',
-                '{name} plugin loaded',
-                ['name' => $this->name]
-            ),
-            __METHOD__
-        );
-    }
-
-    // Protected Methods
-    // =========================================================================
+    Craft::info(
+      Craft::t(
+        'agent',
+        '{name} plugin loaded',
+        ['name' => $this->name]
+      ),
+      __METHOD__
+    );
+  }
 
 }

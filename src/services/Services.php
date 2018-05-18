@@ -1,12 +1,4 @@
 <?php
-/**
- * Agent plugin for Craft CMS 3.x
- *
- * Query the server-side information from the users agent data.
- *
- * @link      https://github.com/marknotton/craft-plugin-agent
- * @copyright Copyright (c) 2018 Mark Notton
- */
 
 namespace marknotton\agent\services;
 
@@ -16,19 +8,18 @@ use Jenssegers\Agent\Agent as JenssegersAgent;
 use Craft;
 use craft\base\Component;
 use craft\helpers\Template;
+use craft\helpers\UrlHelper;
 
-/**
- * @author    Mark Notton
- * @package   Agent
- * @since     1.0.5
- */
-class AgentService extends Component
-{
+class Services extends Component {
+
   public $agent;    // Global variable for easy access for the additional options: https://github.com/jenssegers/agent
   public $name;     // Global variable for easy access: {{ browser.name }}
   public $version;  // Global variable for easy access: {{ browser.version }}
 
-  // Get the full name of the browser or version number
+  /**
+   * Get the full name of the browser or version number
+   * @return object
+   */
   public function full() {
     $browser = $this->agent->browser();
 
@@ -40,7 +31,10 @@ class AgentService extends Component
     return $agent;
   }
 
-  // Return data attribute specifically for the html/body tags
+  /**
+   * Return data attribute specifically for the html/body tags
+   * @return object
+   */
   public function data() {
 
     $version = $this->version == 0 ? '' : ' '.$this->version;
@@ -56,11 +50,11 @@ class AgentService extends Component
     return Template::raw($data);
   }
 
-	public function session() {
-		return craft()->httpSession;
-	}
 
-  // ... Returns true if current browser is EITHER, IE version 9 or 10, Chrome version 50 or above, or Firefox any version
+  /**
+   * Checks for browser types and versions
+   * @return boolean
+   */
   public function is() {
 
     // Atleast one browser sting arugment should be passed
@@ -74,11 +68,15 @@ class AgentService extends Component
 
     foreach ($arguments as &$settings) {
 
-      $agents = array();
-      $versions = array();
+      $agents = [];
+      $versions = [];
       $condition = null;
 
-      $explodeSettings = explode(' ', $settings);
+      if (gettype($settings) == 'string') {
+        $explodeSettings = explode(' ', $settings);
+      } else {
+        $explodeSettings = $settings;
+      }
 
       // Check all the given settings
       foreach ($explodeSettings as &$setting) {
@@ -109,6 +107,7 @@ class AgentService extends Component
           break;
         }
       }
+
 
       if (!empty($agents)) {
 
@@ -177,13 +176,35 @@ class AgentService extends Component
 
   }
 
+  /**
+   * Redirect to a specific page if the criteria is matched
+   * @param  mixed   $criteria   Object or string the adheres to the search criteria syntax
+   * @param  string  $redirect   Relative URL to redirect to
+   * @param  integer $statuscode Amend the status code
+   */
+  public function redirect($criteria, $redirect = 'browser', $statuscode = 302) {
+    if ( $this->is($criteria) ) {
+      $url = UrlHelper::url($redirect);
+      Craft::$app->getResponse()->redirect($url, $statuscode);
+    }
+  }
+
+  /**
+   * Innitialisers
+   * @return none
+   */
   public function init() {
     $this->agent = new JenssegersAgent();
     $this->name = strtolower($this->agent->browser());
     $this->version = floor($this->agent->version($this->agent->browser()));
   }
 
-  // Use Jenssegers agent methods as fallbacks should they not be defined in this services class
+  /**
+   * Use Jenssegers agent methods as fallbacks should they not be defined in this services class
+   * @param  [type] $method [description]
+   * @param  [type] $args   [description]
+   * @return [type]         [description]
+   */
   public function __call($method, $args) {
     return call_user_func_array( array($this->agent, $method), $args );
   }
