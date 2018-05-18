@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.5 - 2018-05-18
+### Added
+- agent.js is an optional script that opens up a list of features to query data attributes and device types.
+
+### Updated
+- Read Me includes documentation for agent.js
+
 ## 1.0.4 - 2018-05-09
 ### Added
 - A repo icon

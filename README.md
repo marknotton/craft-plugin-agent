@@ -252,13 +252,13 @@ You can include the agent.js like this:
 )%}
 ```
 
-You can initialise it like this in your own script:
+You can initialise it like this:
 
 ```js
 let agent = new Agent();
 ```
 
-By default, we assume your using the Agent data function is defined in your HTML tag via Twig:
+By default, we assume the Twig data function is defined in your HTML tag via Twig:
 
 ```html
 <html {{ craft.agent.data|default }}>
@@ -267,22 +267,26 @@ By default, we assume your using the Agent data function is defined in your HTML
 If you're using it on another tag, you'll need to define the element like this:
 
 ```js
-let agent = new Agent($('body'));
+let agent = new Agent($('body')[0]);
 ```
 
 Now you have access to these methods:
 
 
-| Function | Autoload | Return Example | Description |
-| -- | -- | -- | -- | -- |
-| agent.browser | true | ```{name: "chrome", version: "66"}``` | Gets the users browser name and version number |
-| agent.viewport | true | ```{width: 1345, height: 1321}``` | Gets the users viewport width and height |
-| agent.screen | true | ```{pixelWidth: 2560, pixelHeight: 1440}``` | Gets the users device resolution. This takes into account condensed pixels |
-| agent.platform | true | ```osx``` | Gets the users platform type |
-| agent.mobile | true | ```true``` | Checks if the user is on a mobile device |
-| agent.tablet | true | ```true``` | Checks if the user is on a tablet device |
-| agent.desktop | true | ```true``` | Checks if the user is on a desktop |
-| agent.orientation | false | ```landscape``` | Checks the orientation of the users display/device |
-| agent.notch | false | ```left``` | Checks if the users device has a notch, and tells you what side it's on |
+| Function | Return Example | Description |
+| -- |  -- | -- | -- |
+| agent.browser | ```{name: "chrome", version: "66"}``` | Gets the users browser name and version number |
+| agent.viewport | ```{width: 1345, height: 1321}``` | Gets the users viewport width and height |
+| agent.screen | ```{pixelWidth: 2560, pixelHeight: 1440}``` | Gets the users device resolution. This takes into account condensed pixels |
+| agent.platform | ```osx``` | Gets the users platform type |
+| agent.mobile | ```true``` | Checks if the user is on a mobile device |
+| agent.tablet | ```true``` | Checks if the user is on a tablet device |
+| agent.desktop | ```true``` | Checks if the user is on a desktop |
+| agent.orientation | ```landscape``` | Checks the orientation of the users display/device |
+| agent.notch | ```left``` | Checks if the users device has a notch, and tells you what side it's on |
 
-Auto loaded methods are called when the Agent Class is initialised. They are then pushed directly to the DOM window. So all autoloaded methods are added or merged to existing objects. You can disable this by passing in `false` as argument.
+Orientation and Notch data is stored in the DOM window as `device`. Refering to this will return something like this:
+
+```[orientation: "landscape", type: "iphoneX", notched: true, notch: "left"]```
+
+All of the above methods are auto loaded when the Agent Class is initialised. Each method stores data to the DOM window. So rather than actioning each method when you need it, you can refer to the cached data in your Window. Meaning you can simply call `browser` in your script to get the data. You can disable this by passing in `false` as argument: `new Agent(false)`.

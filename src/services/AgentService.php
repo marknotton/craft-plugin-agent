@@ -20,7 +20,7 @@ use craft\helpers\Template;
 /**
  * @author    Mark Notton
  * @package   Agent
- * @since     1.0.0
+ * @since     1.0.5
  */
 class AgentService extends Component
 {

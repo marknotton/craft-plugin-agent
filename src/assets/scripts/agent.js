@@ -8,14 +8,12 @@ class Agent {
     let autoload = true;
     let element = document.getElementsByTagName("html")[0];
 
-    let autoloads = [
-      'browser',
-      'platform',
-      'mobile',
-      'tablet',
-      'desktop',
-      'viewport'
-    ]
+    let autoloads = ['browser', 'platform', 'mobile', 'tablet', 'desktop', 'viewport']
+
+    // List of known notched devices and their screen resolutions.
+    let notchedScreens = {
+      'iphoneX' : [1125, 2436],
+    };
 
     var args = [].slice.call(arguments);
 
@@ -42,7 +40,7 @@ class Agent {
 
       // Add a listener for mobile and tablets to check for orientation changes. Call this function on Dom Ready too.
       if (window.mobile || window.tablet) {
-        window.addEventListener('orientationchange', this.debounce((e) => {
+        window.addEventListener('orientationchange', $this.debounce((e) => {
           this.orientation.update
         }));
         this.orientation.update
@@ -57,11 +55,16 @@ class Agent {
         window.screen = this.screen;
       }
 
-      // If the browser platform is iOS and the users device screen dimensions match those of the iPhoneX; define the device.iphoneX variable to true;
-      if (platform == 'ios' && screen.pixelWidth == 1125 && screen.pixelHeight === 2436) {
-        window.iphoneX = true
-        body.addClass('iphoneX')
+      // Loop through known notched devices
+      for (const key of Object.keys(notchedScreens)) {
+        if (screen.pixelWidth == notchedScreens[key][0] && screen.pixelHeight == notchedScreens[key][1]
+          || screen.pixelWidth == notchedScreens[key][1] && screen.pixelHeight == notchedScreens[key][0]) {
+          window.device.type = key;
+          window.device.notched = true
+          this.notch;
+        }
       }
+
     }
 
   }
@@ -106,10 +109,10 @@ class Agent {
   }
 
   get viewport () {
-    return {
+    return window.viewport = {
       width : window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       height : window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-    }
+    };
   }
 
   get screen () {
@@ -123,17 +126,19 @@ class Agent {
   get notch () {
 
     if (window.device.orientation == 'landscape') {
-      // If the iPhoneX is rotated left 90 degrees, assume the notch exists on the left
+      // If the device is rotated left 90 degrees, assume the notch exists on the left
       this.element.setAttribute("data-notch", 'left')
       window.device.notch = 'left'
     } else if (window.device.orientation == 'upside-down landscape') {
-      // If the iPhoneX is rotated right 90 degrees, assume the notch exists on the right
+      // If the device is rotated right 90 degrees, assume the notch exists on the right
       this.element.setAttribute("data-notch", 'right')
       window.device.notch = 'right'
     } else {
-      // If the iPhoneX is not landscape at all, remove both classes
-      this.element.removeAttribute("data-notch")
-      window.device.notch = false
+      // If the device is not landscape at all, remove both classes
+      // this.element.removeAttribute("data-notch")
+      // window.device.notch = false;
+      this.element.setAttribute("data-notch", 'top')
+      window.device.notch = 'top'
     }
     return window.device.notch;
   }
@@ -152,8 +157,8 @@ class Agent {
         // Update the data-orientation on the HTML element
         $this.element.setAttribute("data-orientation", window.device.orientation)
 
-        // If the device is an iPhoneX do a check for 'the notch' and it's position
-        if (window.device.iphoneX) {
+        // If the device is notched do a check for 'the notch' and it's position
+        if (window.device.notched) {
           $this.notch
         }
       },
