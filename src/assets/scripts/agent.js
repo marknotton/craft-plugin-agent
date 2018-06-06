@@ -40,9 +40,9 @@ class Agent {
 
       // Add a listener for mobile and tablets to check for orientation changes. Call this function on Dom Ready too.
       if (window.mobile || window.tablet) {
-        window.addEventListener('orientationchange', $this.debounce((e) => {
-          this.orientation.update
-        }));
+        window.addEventListener('orientationchange', (event) => {
+          setTimeout(this.orientation.update, 10);
+        });
         this.orientation.update
       }
 
@@ -69,43 +69,42 @@ class Agent {
 
   }
 
-  debounce (fn, time = 10)  {
-    let timeout;
-
-    return function() {
-      const functionCall = () => fn.apply(this, arguments);
-
-      clearTimeout(timeout);
-      timeout = setTimeout(functionCall, time);
-    }
-  }
-
   get browser () {
-    let values = this.attributes.getNamedItem('data-browser').value.split(' ');
-    return {
-      name: values[0] || null,
-      version: values[1] || null
+    if (this.attributes['data-browser']) {
+      let values = this.attributes.getNamedItem('data-browser').value.split(' ');
+      return {
+        name: values[0] || null,
+        version: values[1] || null
+      }
     }
   }
 
   get platform () {
-    let value = this.attributes.getNamedItem('data-platform').value;
-    return value || 'unknown';
+    if (this.attributes['data-platform']) {
+      let value = this.attributes.getNamedItem('data-platform').value;
+      return value || 'unknown';
+    }
   }
 
   get mobile () {
-    let values = this.attributes.getNamedItem('data-device').value;
-    return values == 'mobile';
+    if (this.attributes['data-device']) {
+      let values = this.attributes.getNamedItem('data-device').value;
+      return values == 'mobile';
+    }
   }
 
   get tablet () {
-    let values = this.attributes.getNamedItem('data-device').value;
-    return values == 'tablet'
+    if (this.attributes['data-device']) {
+      let values = this.attributes.getNamedItem('data-device').value;
+      return values == 'tablet'
+    }
   }
 
   get desktop () {
-    let values = this.attributes.getNamedItem('data-device').value;
-    return values == 'desktop'
+    if (this.attributes['data-device']) {
+      let values = this.attributes.getNamedItem('data-device').value;
+      return values == 'desktop'
+    }
   }
 
   get viewport () {
