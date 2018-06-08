@@ -55,7 +55,7 @@ class Services extends Component {
    * Checks for browser types and versions
    * @return boolean
    */
-  public function is() {
+  public function check() {
 
     // Atleast one browser sting arugment should be passed
     if ( func_num_args() < 1 ){
@@ -66,20 +66,18 @@ class Services extends Component {
 
     $arguments = func_get_args();
 
-    foreach ($arguments as &$settings) {
+    if (is_array($arguments[0])) {
+      $arguments = $arguments[0];
+    }
+
+    foreach ($arguments as &$argument) {
 
       $agents = [];
       $versions = [];
       $condition = null;
 
-      if (gettype($settings) == 'string') {
-        $explodeSettings = explode(' ', $settings);
-      } else {
-        $explodeSettings = $settings;
-      }
-
       // Check all the given settings
-      foreach ($explodeSettings as &$setting) {
+      foreach (explode(' ', $argument) as &$setting) {
 
         if (preg_match('[<|>|=>|<=]', $setting)) {
           // If a greater or less than condition is passed
@@ -89,25 +87,11 @@ class Services extends Component {
         } else if (ctype_digit($setting)) {
           // If number, add as version
           array_push($versions, $setting);
-        } else {
+        } else if ($setting !== '='){
           // Anything else is assumed to be the agents name
           array_push($agents, $setting);
         }
       }
-
-      // If mutliple versions and a condition are used at the same time
-      // Recreate the version array with only the more relivant version number.
-      if (!is_null($condition) && count($versions) >= 2) {
-        switch ($condition) {
-          case ( $condition == ">" || $condition == "=>" ):
-            $versions = array(max($versions));
-          break;
-          case ( $condition == "<" || $condition == "=<" ):
-            $versions = array(min($versions));
-          break;
-        }
-      }
-
 
       if (!empty($agents)) {
 
@@ -118,9 +102,10 @@ class Services extends Component {
         if (!empty($versions)) {
           // Validate any of the given versions
           foreach ($versions as &$version) {
-            // Only update check variable is it is null or true. Once it's false, it stays false
+            // Only update check variable if it is null or true. Once it's false, it stays false
             if (is_null($checkVersion) || $checkVersion != false) {
               if (isset($condition)){
+
                 // If there is a condition to validate
                 switch ($condition) {
                   case ">=":
@@ -183,7 +168,7 @@ class Services extends Component {
    * @param  integer $statuscode Amend the status code
    */
   public function redirect($criteria, $redirect = 'browser', $statuscode = 302) {
-    if ( $this->is($criteria) ) {
+    if ( $this->check($criteria) ) {
       $url = UrlHelper::url($redirect);
       Craft::$app->getResponse()->redirect($url, $statuscode);
     }

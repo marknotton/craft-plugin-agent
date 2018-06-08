@@ -9,7 +9,8 @@ Query the server-side information from the users agent data.
 
 - [Credit](#dependencies)
 - [Installation](#installation)
-- [Is](#is)
+- [Check](#check)
+- [Redirect](#redirect)
 - [Data](#data)
 - [Full](#full)
 - [Browser/platform version](#browserplatform-version)
@@ -46,38 +47,55 @@ Or manually in your compsoer.json:
 }
 ```
 
-## Is
+## Check
 
 Perform a number of checks to determine wether the users browser type is a match. Returns ```boolean```.
 
 #### Example 1:
 Returns true if current browser is either 'IE, Edge, or Firefox'
 ```
-{{ craft.agent.is('ie edge firefox') }}
+{{ craft.agent.check('ie edge firefox') }}
 ```
 
 #### Example 2:
 Exactly the same as example one, but demonstrates you can pass in as many arguments as you like. Each argument is handled as an "or" not an "and".
 ```
-{{ craft.agent.is('ie', 'edge', 'firefox') }}
+{{ craft.agent.check('ie', 'edge', 'firefox') }}
 ```
 
 #### Example 3:
 Returns true if current browser is greater than IE 9
 ```
-{{ craft.agent.is('ie 9 >') }}
+{{ craft.agent.check('ie 9 >') }}
 ```
 
 #### Example 4:
 Returns true if current browser is greater or equal to IE 9
 ```
-{{ craft.agent.is('ie => 9') }}
+{{ craft.agent.check('ie => 9') }}
 ```
 
 #### Example 5:
-Returns true if current browser is either, IE version 9 or 10, Chrome version 50 or above, or Firefox any version
+Returns true if current browser is either, IE version 9, Chrome version 50 or above, or Firefox any version
 ```
-{{ craft.agent.is('ie 9 10', 'chrome > 49', 'firefox') }}
+{{ craft.agent.check('ie 9', 'chrome > 49', 'firefox') }}
+```
+
+## Redirect
+Redirect users if your browser conditions are not met. Following the same syntax as the 'check' function,
+this will redirect users to a specific template. You can also pass in a status code too.
+
+```
+{% set criteria = [
+  'ie < 11',
+  'chrome <= 55',
+  'firefox <= 44',
+  'safari <= 7',
+  'edge <= 15',
+  'opera <= 50'
+] %}
+
+{{ craft.agent.redirect(criteria, 'no-support.twig', 302) }}
 ```
 
 ## Data

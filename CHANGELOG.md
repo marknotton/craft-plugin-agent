@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.7 - 2018-07-08
+### Added
+-  A 'redirect' function that automatically redirects to a template if browser check conditions are not met.
+
 ## 1.0.6 - 2018-07-07
 ### Fixed
-- Resolved errors on older browsers where data-attributes didn't exsit. 
+- Resolved errors on older browsers where data-attributes didn't exsit.
 
 ## 1.0.5 - 2018-05-18
 ### Added
