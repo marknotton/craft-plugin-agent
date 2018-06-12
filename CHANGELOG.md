@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unchanged
+### Fixed
+- Fix a bug that's preventing the plugin from being able to install via the Plugin Store.
+
 ## 1.0.7 - 2018-07-08
 ### Added
 -  A 'redirect' function that automatically redirects to a template if browser check conditions are not met.
