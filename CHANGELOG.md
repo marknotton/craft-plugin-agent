@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.8 - 2018-07-19
+### Fixed
+- Fixed a schema-versioning bug that's preventing the plugin from being able to install via the Plugin Store.
+
 ## Unchanged
 ### Fixed
 - Fix a bug that's preventing the plugin from being able to install via the Plugin Store.
