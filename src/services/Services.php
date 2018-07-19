@@ -97,8 +97,6 @@ class Services extends Component {
       array_push($rules, $rule);
     }
 
-    var_dump($rules);
-
     // Now we have all the rules and conditions...
 
     if (!empty($rules)) {
