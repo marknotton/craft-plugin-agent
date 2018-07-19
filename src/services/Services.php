@@ -157,7 +157,7 @@ class Services extends Component {
    * @param  integer $statuscode Amend the status code
    */
   public function redirect($criteria, $redirect = 'browser', $statuscode = 302) {
-    if ( $this->check($criteria) ) {
+    if ( !$this->check($criteria) ) {
       $url = UrlHelper::url($redirect);
       Craft::$app->getResponse()->redirect($url, $statuscode);
     }
