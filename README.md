@@ -1,7 +1,7 @@
 
 <img src="https://i.imgur.com/RcNoQQa.png" alt="Agent" align="left" height="60" />
 
-# Agent plugin for Craft CMS 3.x
+# Agent plugin for Craft CMS 3
 
 Query the server-side information from the users agent data.
 
@@ -43,7 +43,7 @@ Or manually in your compsoer.json:
 
 ```
 "require": {
-  "marknotton/agent": "^1.0.7-2"
+  "marknotton/agent": "^1.0.9"
 }
 ```
 

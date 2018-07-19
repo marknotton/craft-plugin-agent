@@ -9,6 +9,8 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
+use craft\helpers\StringHelper;
+
 
 class Services extends Component {
 
@@ -57,12 +59,12 @@ class Services extends Component {
    */
   public function check() {
 
-    // Atleast one browser sting arugment should be passed
+    // Atleast one browser string arugment should be passed
     if ( func_num_args() < 1 ){
       return false;
     }
 
-    $valid = null;
+    $valid = true;
 
     $arguments = func_get_args();
 
@@ -70,92 +72,118 @@ class Services extends Component {
       $arguments = $arguments[0];
     }
 
+    $rules = [];
+
     foreach ($arguments as &$argument) {
 
-      $agents = [];
-      $versions = [];
-      $condition = null;
+      $rule = [];
 
       // Check all the given settings
       foreach (explode(' ', $argument) as &$setting) {
 
         if (preg_match('[<|>|=>|<=]', $setting)) {
           // If a greater or less than condition is passed
-          if (is_null($condition)) {
-            $condition = $setting;
-          }
+          $rule['condition'] = $setting;
         } else if (ctype_digit($setting)) {
           // If number, add as version
-          array_push($versions, $setting);
+          $rule['version'] = $setting;
         } else if ($setting !== '='){
           // Anything else is assumed to be the agents name
-          array_push($agents, $setting);
+          $rule['name'] = $setting;
         }
+
       }
 
-      if (!empty($agents)) {
-
-        $checkVersion = null;
-
-        // Versions
-        // If there is at least one version to check do the following:
-        if (!empty($versions)) {
-          // Validate any of the given versions
-          foreach ($versions as &$version) {
-            // Only update check variable if it is null or true. Once it's false, it stays false
-            if (is_null($checkVersion) || $checkVersion != false) {
-              if (isset($condition)){
-
-                // If there is a condition to validate
-                switch ($condition) {
-                  case ">=":
-                    $checkVersion = $this->version >= $version;
-                    break;
-                  case ">":
-                    $checkVersion = $this->version > $version;
-                    break;
-                  case "<=":
-                    $checkVersion = $this->version <= $version;
-                    break;
-                  case "<":
-                    $checkVersion = $this->version < $version;
-                    break;
-                }
-              } else {
-                // Otherwise just check if the given version is exact
-                $checkVersion = $this->version == $version;
-              }
-            }
-          }
-        }
-
-        $checkBrowser = null;
-
-        // Browsers
-        // Check all the browsers
-        foreach ($agents as &$agent) {
-          // If any of the agents don't match, set false
-          if($this->agent->is($agent)) {
-            $checkBrowser = true;
-          }
-        }
-
-        // The prenultimate validation.
-        // If the version is null or valid, and the browser is valid change the
-        // valid variable to true;
-        if (is_null($valid) || $valid != false) {
-          if (is_null($checkVersion) || $checkVersion == true) {
-            if ($checkBrowser == true) {
-              $valid = true;
-            }
-          }
-        }
-
-      } else {
-        // There were no agents defined
-        $valid = false;
-      }
+      array_push($rules, $rule);
     }
+
+    // echo '<pre>';
+    // var_dump($rules);
+    // echo '</pre>';
+    // if (!empty($agents)) {
+    //   if (in_array($this->name, $agents)) {
+    //     if (!empty($versions)) {
+    //
+    //     }
+    //   } else {
+    //
+    //   }
+    // }
+
+//       if (!empty($agents)) {
+//
+//         var_dump($agents);
+//
+//         $checkVersion = null;
+//
+//         // Versions
+//         // If there is at least one version to check do the following:
+//         if (!empty($versions)) {
+//           // Validate any of the given versions
+//           foreach ($versions as &$version) {
+//
+//
+//             // Only update check variable if it is null or true. Once it's false, it stays false
+//             if (is_null($checkVersion) || $checkVersion != false) {
+//               if (isset($condition)){
+//
+//                 // If there is a condition to validate
+//                 switch ($condition) {
+//                   case ">=":
+//                     $checkVersion = $version >= $this->version;
+//                     break;
+//                   case ">":
+//                     $checkVersion = $version > $this->version;
+//                     break;
+//                   case "<=":
+//                   echo '<pre>';
+//                   echo $agents[0] . '<br>';
+//                   echo $this->version . '<br>';
+//                   echo $version . '<br>';
+//                   echo '</pre>';
+//                     $checkVersion = $version <= $this->version;
+//                     break;
+//                   case "<":
+//                     $checkVersion = $version < $this->version;
+//                     break;
+//                 }
+//               } else {
+//                 // Otherwise just check if the given version is exact
+//                 $checkVersion = $version == $this->version;
+//               }
+//             }
+//           }
+//         }
+//
+// echo $checkVersion ? 'valid' : 'not valid';
+//
+//         $checkBrowser = null;
+//
+//         // Browsers
+//         // Check all the browsers
+//         foreach ($agents as &$agent) {
+//           // If any of the agents don't match, set false
+//           if($this->agent->is($agent)) {
+//             $checkBrowser = true;
+//           }
+//         }
+//
+//         // The prenultimate validation.
+//         // If the version is null or valid, and the browser is valid change the
+//         // valid variable to true;
+//         if (is_null($valid) || $valid != false) {
+//           if (is_null($checkVersion) || $checkVersion == true) {
+//             if ($checkBrowser == true) {
+//               $valid = true;
+//             }
+//           }
+//         }
+//
+//       } else {
+//         // There were no agents defined
+//         $valid = false;
+//       }
+//     }
 
     return $valid;
 
@@ -170,7 +198,7 @@ class Services extends Component {
   public function redirect($criteria, $redirect = 'browser', $statuscode = 302) {
     if ( $this->check($criteria) ) {
       $url = UrlHelper::url($redirect);
-      Craft::$app->getResponse()->redirect($url, $statuscode);
+      // Craft::$app->getResponse()->redirect($url, $statuscode);
     }
   }
 
@@ -180,7 +208,7 @@ class Services extends Component {
    */
   public function init() {
     $this->agent = new JenssegersAgent();
-    $this->name = strtolower($this->agent->browser());
+    $this->name = StringHelper::toKebabCase($this->agent->browser());
     $this->version = floor($this->agent->version($this->agent->browser()));
   }
 
