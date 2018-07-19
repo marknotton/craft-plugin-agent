@@ -1,6 +1,6 @@
 <?php
 /**
-* Agent plugin for Craft CMS 3.x
+* Agent plugin for Craft CMS 3
 *
 * Query the server-side information from the users agent data.
 *
@@ -26,7 +26,7 @@ class Agent extends Plugin {
 
   public static $plugin;
 
-  public $schemaVersion = '1.0.8';
+  public $schemaVersion = '1.1.0';
 
   public function init() {
 

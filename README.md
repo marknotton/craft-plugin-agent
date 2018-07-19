@@ -1,7 +1,7 @@
 
 <img src="https://i.imgur.com/RcNoQQa.png" alt="Agent" align="left" height="60" />
 
-# Agent plugin for Craft CMS 3
+# Agent plugin for Craft CMS 3.x
 
 Query the server-side information from the users agent data.
 
@@ -43,7 +43,7 @@ Or manually in your compsoer.json:
 
 ```
 "require": {
-  "marknotton/agent": "^1.0.9"
+  "marknotton/agent": "^1.1.0"
 }
 ```
 
@@ -54,45 +54,39 @@ Perform a number of checks to determine wether the users browser type is a match
 #### Example 1:
 Returns true if current browser is either 'IE, Edge, or Firefox'
 ```
-{{ craft.agent.check('ie edge firefox') }}
-```
-
-#### Example 2:
-Exactly the same as example one, but demonstrates you can pass in as many arguments as you like. Each argument is handled as an "or" not an "and".
-```
 {{ craft.agent.check('ie', 'edge', 'firefox') }}
 ```
 
-#### Example 3:
+#### Example 2:
 Returns true if current browser is greater than IE 9
 ```
-{{ craft.agent.check('ie 9 >') }}
+{{ craft.agent.check('ie > 9') }}
 ```
 
-#### Example 4:
+#### Example 3:
 Returns true if current browser is greater or equal to IE 9
 ```
 {{ craft.agent.check('ie => 9') }}
 ```
 
-#### Example 5:
-Returns true if current browser is either, IE version 9, Chrome version 50 or above, or Firefox any version
+#### Example 4:
+Returns true if current browser is either, IE version 9, Chrome version 50 or above, or any version of Firefox
 ```
 {{ craft.agent.check('ie 9', 'chrome > 49', 'firefox') }}
 ```
 
 ## Redirect
-Redirect users if your browser conditions are not met. Following the same syntax as the 'check' function,
+Redirect users if their current agent doesn't meet any of these conditions. Following the same syntax as the 'check' function,
 this will redirect users to a specific template. You can also pass in a status code too.
 
 ```
 {% set criteria = [
-  'ie < 11',
-  'chrome <= 55',
-  'firefox <= 44',
-  'safari <= 7',
-  'edge <= 15',
-  'opera <= 50'
+  'ie 11',
+  'chrome > 55',
+  'firefox > 44',
+  'safari >= 7',
+  'edge >= 15',
+  'opera > 50'
 ] %}
 
 {{ craft.agent.redirect(criteria, 'no-support.twig', 302) }}

@@ -64,7 +64,7 @@ class Services extends Component {
       return false;
     }
 
-    $valid = true;
+    $valid = false;
 
     $arguments = func_get_args();
 
@@ -89,7 +89,7 @@ class Services extends Component {
           $rule['version'] = $setting;
         } else if ($setting !== '='){
           // Anything else is assumed to be the agents name
-          $rule['name'] = $setting;
+          $rule['name'] = StringHelper::toKebabCase($setting);
         }
 
       }
@@ -97,93 +97,56 @@ class Services extends Component {
       array_push($rules, $rule);
     }
 
-    // echo '<pre>';
-    // var_dump($rules);
-    // echo '</pre>';
-    // if (!empty($agents)) {
-    //   if (in_array($this->name, $agents)) {
-    //     if (!empty($versions)) {
-    //
-    //     }
-    //   } else {
-    //
-    //   }
-    // }
+    var_dump($rules);
 
-//       if (!empty($agents)) {
-//
-//         var_dump($agents);
-//
-//         $checkVersion = null;
-//
-//         // Versions
-//         // If there is at least one version to check do the following:
-//         if (!empty($versions)) {
-//           // Validate any of the given versions
-//           foreach ($versions as &$version) {
-//
-//
-//             // Only update check variable if it is null or true. Once it's false, it stays false
-//             if (is_null($checkVersion) || $checkVersion != false) {
-//               if (isset($condition)){
-//
-//                 // If there is a condition to validate
-//                 switch ($condition) {
-//                   case ">=":
-//                     $checkVersion = $version >= $this->version;
-//                     break;
-//                   case ">":
-//                     $checkVersion = $version > $this->version;
-//                     break;
-//                   case "<=":
-//                   echo '<pre>';
-//                   echo $agents[0] . '<br>';
-//                   echo $this->version . '<br>';
-//                   echo $version . '<br>';
-//                   echo '</pre>';
-//                     $checkVersion = $version <= $this->version;
-//                     break;
-//                   case "<":
-//                     $checkVersion = $version < $this->version;
-//                     break;
-//                 }
-//               } else {
-//                 // Otherwise just check if the given version is exact
-//                 $checkVersion = $version == $this->version;
-//               }
-//             }
-//           }
-//         }
-//
-// echo $checkVersion ? 'valid' : 'not valid';
-//
-//         $checkBrowser = null;
-//
-//         // Browsers
-//         // Check all the browsers
-//         foreach ($agents as &$agent) {
-//           // If any of the agents don't match, set false
-//           if($this->agent->is($agent)) {
-//             $checkBrowser = true;
-//           }
-//         }
-//
-//         // The prenultimate validation.
-//         // If the version is null or valid, and the browser is valid change the
-//         // valid variable to true;
-//         if (is_null($valid) || $valid != false) {
-//           if (is_null($checkVersion) || $checkVersion == true) {
-//             if ($checkBrowser == true) {
-//               $valid = true;
-//             }
-//           }
-//         }
-//
-//       } else {
-//         // There were no agents defined
-//         $valid = false;
-//       }
-//     }
+    // Now we have all the rules and conditions...
+
+    if (!empty($rules)) {
+
+      $index = array_search($this->name, array_column($rules, 'name')) ?? false;
+
+      // Check to see if the current browser name exists in any of the given argument rules
+      if ( $index !== false) {
+
+        $name = $rules[$index]['name'];
+        $condition = $rules[$index]['condition'] ?? false;
+        $version = $rules[$index]['version'] ?? false;
+
+        if ($condition && $version) {
+
+          // echo 'This is ' . $name . ' version ' . $this->version . '. And this website supports anything that is ' . $condition . ' version ' . $version . '<br />';
+
+          // If there is a condition to validate
+          switch ($condition) {
+            case ">=":
+              $valid = $this->version >= $version;
+              break;
+            case ">":
+              $valid = $this->version > $version;
+              break;
+            case "<=":
+              $valid = $this->version <= $version;
+              break;
+            case "<":
+              $valid = $this->version < $version;
+              break;
+          }
+
+        } elseif ($version) {
+
+          // echo 'This is ' . $name . ' version ' . $this->version . '. And this website only supports version '. $version . '<br />';
+
+          $valid = $version == $this->version;
+
+        } else {
+
+          // echo 'This is ' . $name . ' version ' . $this->version . '. And this website only supports any version of this browser.<br />';
+
+          $valid = $name == $this->name;
+
+        }
+      }
+    }
 
     return $valid;
 
