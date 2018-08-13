@@ -294,7 +294,7 @@ Now you have access to these methods:
 | agent.mobile | ```true``` | Checks if the user is on a mobile device |
 | agent.tablet | ```true``` | Checks if the user is on a tablet device |
 | agent.desktop | ```true``` | Checks if the user is on a desktop |
-| agent.touch | ```true``` | Checks if the users supports touch inputs |
+| agent.touch | ```true``` | Checks if the users device supports touch input |
 | agent.orientation | ```landscape``` | Checks the orientation of the users display/device |
 | agent.notch | ```left``` | Checks if the users device has a notch, and tells you what side it's on |
 
