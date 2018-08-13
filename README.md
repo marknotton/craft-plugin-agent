@@ -294,11 +294,12 @@ Now you have access to these methods:
 | agent.mobile | ```true``` | Checks if the user is on a mobile device |
 | agent.tablet | ```true``` | Checks if the user is on a tablet device |
 | agent.desktop | ```true``` | Checks if the user is on a desktop |
+| agent.touch | ```true``` | Checks if the users supports touch inputs |
 | agent.orientation | ```landscape``` | Checks the orientation of the users display/device |
 | agent.notch | ```left``` | Checks if the users device has a notch, and tells you what side it's on |
 
-Orientation and Notch data is stored in the DOM window as `device`. Refering to this will return something like this:
+Orientation, Touch, and Notch data is stored in the DOM window as `device`. Referring to this will return something like this:
 
-```[orientation: "landscape", type: "iphoneX", notched: true, notch: "left"]```
+```[orientation: "landscape", touch: true, type: "iphoneX", notched: true, notch: "left"]```
 
 All of the above methods are auto loaded when the Agent Class is initialised. Each method stores data to the DOM window. So rather than actioning each method when you need it, you can refer to the cached data in your Window. Meaning you can simply call `browser` in your script to get the data. You can disable this by passing in `false` as argument: `new Agent(false)`.

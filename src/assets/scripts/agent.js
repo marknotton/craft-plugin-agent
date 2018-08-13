@@ -8,7 +8,7 @@ class Agent {
     let autoload = true;
     let element = document.getElementsByTagName("html")[0];
 
-    let autoloads = ['browser', 'platform', 'mobile', 'tablet', 'desktop', 'viewport']
+    let autoloads = ['browser', 'platform', 'mobile', 'tablet', 'desktop', 'touch', 'viewport']
 
     // List of known notched devices and their screen resolutions.
     let notchedScreens = {
@@ -45,6 +45,9 @@ class Agent {
         });
         this.orientation.update
       }
+
+      // Apply a boolean for the touch screen detection
+      window.device.touch = this.touch;
 
       // Add device width in pixels and device height in pixels to the screen object
       if ( window.screen !== undefined ) {
@@ -105,6 +108,10 @@ class Agent {
       let values = this.attributes.getNamedItem('data-device').value;
       return values == 'desktop'
     }
+  }
+
+  get touch () {
+    return 'ontouchstart' in window || window.navigator.msPointerEnabled || 'ontouchstart' in document.documentElement;
   }
 
   get viewport () {

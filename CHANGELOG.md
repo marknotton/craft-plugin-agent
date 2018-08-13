@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 1.1.0 - 2018-07-49
+## 1.1.1 - 2018-08-13
+### Added
+- Agent.js now includes a rudimentary check for touch devices.
+
+
+## 1.1.0 - 2018-07-19
 ### Changed
 - Checks function has been completely rewritten. Instead of checking if criteria is not met, it now does the opposite. This is far more legible and should have been this way from the offset. It's also much quicker, and deals with far less faff.
 
