@@ -103,20 +103,20 @@ class Services extends Component {
 
       $index = array_search($this->name, array_column($rules, 'name')) ?? false;
 
+      // In some cases where user agents versions can't be read,
+      // they will default to 0. This can happen on new browser releases.
+      // To avoid the new browsers from being blocked, we have to allow these
+      // regardless of any other criteria.
+      if ($this->version == 0) {
+        return true;
+      }
+
       // Check to see if the current browser name exists in any of the given argument rules
       if ( $index !== false) {
 
         $name = $rules[$index]['name'];
         $condition = $rules[$index]['condition'] ?? false;
         $version = $rules[$index]['version'] ?? false;
-
-        // In some cases where user agents versions can't be read,
-        // they will default to 0. This can happen on new browser releases.
-        // To avoid the new browsers from being blocked, we have to allow these
-        // regardless of any other criteria.
-        if ($this->version == 0) {
-          return true;
-        }
 
         if ($condition && $version) {
 
