@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.2 - 2018-10-11
+### Fixed
+- Redirect function breaks in cases where user agents versions can't be read. To avoid new browsers from being redirected incorrectly, we have to allow browsers coming back with versions 0 regardless of any other criteria.
+
 ## 1.1.1 - 2018-08-13
 ### Added
 - Agent.js now includes a rudimentary check for touch devices.
