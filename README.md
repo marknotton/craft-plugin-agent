@@ -43,7 +43,7 @@ Or manually in your compsoer.json:
 
 ```
 "require": {
-  "marknotton/agent": "^1.1.2"
+  "marknotton/agent": "^1.1.3"
 }
 ```
 
