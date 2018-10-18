@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.4 - 2018-10-18
+### Added
+- ES5 Babelified agent.es5.js distribution file.
+
+
 ## 1.1.2 / 1.1.3 - 2018-10-11
 ### Fixed
 - Redirect function breaks in cases where user agents versions can't be read. To avoid new browsers from being redirected incorrectly, we have to allow browsers coming back with versions 0 regardless of any other criteria.
