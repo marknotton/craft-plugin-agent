@@ -18,6 +18,12 @@ class Services extends Component {
   public $name;     // Global variable for easy access: {{ browser.name }}
   public $version;  // Global variable for easy access: {{ browser.version }}
 
+  // If a user agent partially matches any of these strings, the 'check' method
+  // will pass regardless of any other user defined rules.
+  private $agentExceptions = ['APIs-Google', 'Mediapartners-Google', 'AdsBot-Google-Mobile', 'AdsBot-Google-Mobile',
+  'AdsBot-Google', 'Googlebot-Image', 'Googlebot', 'Googlebot-News', 'Googlebot', 'Googlebot-Video',
+  'Mediapartners-Google', 'AdsBot-Google-Mobile-Apps', 'FeedFetcher-Google'];
+
   /**
    * Get the full name of the browser or version number
    * @return object
@@ -62,6 +68,12 @@ class Services extends Component {
     // Atleast one browser string arugment should be passed
     if ( func_num_args() < 1 ){
       return false;
+    }
+
+    $regex = '/('.implode("|",$this->agentExceptions).')/i';
+
+    if (preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) {
+      return true;
     }
 
     $valid = false;

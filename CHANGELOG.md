@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.5 - 2019-03-20
+### Fixed
+- The new version of Googlebot (smartphone) emulates Chrome 41, which shouldn't really be flagged as an unsupported browser given it's actually a bot. So there are now user agent exceptions (specifically tailored to Google for now) that will allow trusted bots to access the site regardless of version number or browser name. In a future update this will be manageable via the plugins settings.
+
 ## 1.1.4 - 2018-10-18
 ### Added
 - ES5 Babelified agent.es5.js distribution file.
