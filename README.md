@@ -140,11 +140,11 @@ Returns version number
 MobileDetect recently added a `version` method that can get the version number for components. To get the browser or platform version you can use:
 
 ```
-{% set browser = craft.agent.browser() }}
-{% set version = craft.agent.version($browser) }}
+{% set browser = craft.agent.browser() %}
+{% set version = craft.agent.version(browser) %}
 
-{% set platform = craft.agent.platform() }}
-{% set version = craft.agent.version($platform) }}
+{% set platform = craft.agent.platform() %}
+{% set version = craft.agent.version(platform) %}
 ```
 
 *Note, the version method is still in beta, so it might not return the correct result.*
