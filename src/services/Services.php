@@ -71,8 +71,9 @@ class Services extends Component {
     }
 
     $regex = '/('.implode("|",$this->agentExceptions).')/i';
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-    if (preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) {
+    if (preg_match($regex, $userAgent)) {
       return true;
     }
 
