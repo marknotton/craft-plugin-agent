@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.6 - 2019-07-01
+### Fixed
+- There were circumstances where non-human traffic would throw an error because the 'HTTP_USER_AGENT' didn't exist.  
+
 ## 1.1.5 - 2019-03-20
 ### Fixed
 - The new version of Googlebot (smartphone) emulates Chrome 41, which shouldn't really be flagged as an unsupported browser given it's actually a bot. So there are now user agent exceptions (specifically tailored to Google for now) that will allow trusted bots to access the site regardless of version number or browser name. In a future update this will be manageable via the plugins settings.
