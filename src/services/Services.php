@@ -70,11 +70,25 @@ class Services extends Component {
       return false;
     }
 
-    $regex = '/('.implode("|",$this->agentExceptions).')/i';
+    $agentExceptions = $this->agentExceptions;
+
+    if ( $config = Craft::$app->getConfig()->getConfigFromFile('agent') ?? false ) {
+      if ( array_key_exists('checkExceptions', $config) ) {
+        $agentExceptions = array_merge($agentExceptions, $config['checkExceptions']);
+      }
+    }
+
+
+
+    $regex = '/('.implode("|",$agentExceptions).')/i';
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
     if (preg_match($regex, $userAgent)) {
       return true;
+    }
+
+    if ( empty($userAgent) ) {
+      return false;
     }
 
     $valid = false;
@@ -116,20 +130,25 @@ class Services extends Component {
 
       $index = array_search($this->name, array_column($rules, 'name')) ?? false;
 
-      // In some cases where user agents versions can't be read,
-      // they will default to 0. This can happen on new browser releases.
-      // To avoid the new browsers from being blocked, we have to allow these
-      // regardless of any other criteria.
-      if ($this->version == 0) {
-        return true;
+      // If neither agent name or version can be found, return false. 
+      if ( $index === false && $this->version == 0) {
+        return false;
       }
 
       // Check to see if the current browser name exists in any of the given argument rules
       if ( $index !== false) {
 
-        $name = $rules[$index]['name'];
+        $name      = $rules[$index]['name'];
         $condition = $rules[$index]['condition'] ?? false;
-        $version = $rules[$index]['version'] ?? false;
+        $version   = $rules[$index]['version'] ?? false;
+
+        // In some cases where user agents versions can't be read,
+        // they will default to 0. This can happen on new browser releases.
+        // To avoid the new browsers from being blocked, we have to allow these
+        // regardless of any other criteria.
+        if ($this->version == 0 && $name == $this->name) {
+          return true;
+        }
 
         if ($condition && $version) {
 
