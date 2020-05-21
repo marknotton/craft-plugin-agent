@@ -1,245 +1,76 @@
-class Agent {
-  constructor () {
+////////////////////////////////////////////////////////////////////////////////
+// Agent
+////////////////////////////////////////////////////////////////////////////////
 
-    let $this = this;
+/**
+  * Query User Agent data that has been rendered directly from your HTML. 
+  * This is an Immediately-invoked Function Expression
+  *
+  * @author Mark Notton <mark@marknotton.uk>
+  *
+  * @link https://github.com/marknotton/craft-plugin-agent
+  *
+  * @license Copyright 2020 Mark Notton
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+(function () {
+  
+  var element = document.querySelector('[data-browser]')  ||
+                document.querySelector('[data-platform]') ||
+                document.querySelector('[data-device]') 
 
-    window.device = [];
+  if (element) {
 
-    let autoload = true;
-    let element = document.getElementsByTagName("html")[0];
-
-    let autoloads = ['browser', 'platform', 'mobile', 'tablet', 'desktop', 'touch', 'viewport']
-
-    // List of known notched devices and their screen resolutions.
-    let notchedScreens = {
-      'iphoneX' : [1125, 2436],
-    };
-
-    var args = [].slice.call(arguments);
-
-    args.forEach(function(arg) {
-      switch(typeof arg) {
-        case 'object':
-          element = arg;
-        break;
-        case 'boolean':
-          autoload = arg;
-        break;
+    // Extrapolate browser details from the element tag into an object
+    window.browser = function () {
+      if (element.attributes['data-browser']) {
+        var values = element.attributes.getNamedItem('data-browser').value.split(' ');
+        return {
+          name: values[0] || null,
+          version: values[1] || null
+        };
       }
-    });
-
-    this.element = element;
-    this.attributes = element.attributes;
-
-    if ( autoload ) {
-
-      // Run the autoloader methods
-      autoloads.forEach(function (method) {
-        window[method] = $this[method];
-      })
-
-      // Add a listener for mobile and tablets to check for orientation changes. Call this function on Dom Ready too.
-      if (window.mobile || window.tablet) {
-        window.addEventListener('orientationchange', (event) => {
-          setTimeout(this.orientation.update, 10);
-        });
-        this.orientation.update
+    }(); 
+    
+    // Extrapolate platform details from the element tag into a usble value
+    window.platform = function () {
+      if (element.attributes['data-platform']) {
+        var value = element.attributes.getNamedItem('data-platform').value;
+        return value || 'unknown';
       }
-
-      // Apply a boolean for the touch screen detection
-      window.device.touch = this.touch;
-
-      // Add device width in pixels and device height in pixels to the screen object
-      if ( window.screen !== undefined ) {
-        for (var attr in this.screen) {
-          window.screen[attr] = this.screen[attr];
-        }
-      } else {
-        window.screen = this.screen;
+    }(); 
+    
+    // Extrapolate device type from the element tag into a usble value
+    window.mobile = function () {
+      if (element.attributes['data-device']) {
+        var values = element.attributes.getNamedItem('data-device').value;
+        return values == 'mobile';
       }
-
-      // Loop through known notched devices
-      for (const key of Object.keys(notchedScreens)) {
-        if (screen.pixelWidth == notchedScreens[key][0] && screen.pixelHeight == notchedScreens[key][1]
-          || screen.pixelWidth == notchedScreens[key][1] && screen.pixelHeight == notchedScreens[key][0]) {
-          window.device.type = key;
-          window.device.notched = true
-          this.notch;
-        }
+    }(); 
+    
+    // Extrapolate device type from the element tag into a usble value
+    window.tablet = function () {
+      if (element.attributes['data-device']) {
+        var values = element.attributes.getNamedItem('data-device').value;
+        return values == 'tablet';
       }
-
-    }
-
-  }
-
-  get browser () {
-    if (this.attributes['data-browser']) {
-      let values = this.attributes.getNamedItem('data-browser').value.split(' ');
-      return {
-        name: values[0] || null,
-        version: values[1] || null
+    }(); 
+    
+    // Extrapolate device type from the element tag into a usble value
+    window.desktop = function () {
+      if (element.attributes['data-device']) {
+        var values = element.attributes.getNamedItem('data-device').value;
+        return values == 'desktop';
       }
-    }
+    }();
   }
-
-  get platform () {
-    if (this.attributes['data-platform']) {
-      let value = this.attributes.getNamedItem('data-platform').value;
-      return value || 'unknown';
-    }
-  }
-
-  get mobile () {
-    if (this.attributes['data-device']) {
-      let values = this.attributes.getNamedItem('data-device').value;
-      return values == 'mobile';
-    }
-  }
-
-  get tablet () {
-    if (this.attributes['data-device']) {
-      let values = this.attributes.getNamedItem('data-device').value;
-      return values == 'tablet'
-    }
-  }
-
-  get desktop () {
-    if (this.attributes['data-device']) {
-      let values = this.attributes.getNamedItem('data-device').value;
-      return values == 'desktop'
-    }
-  }
-
-  get touch () {
-	  var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
-	  var mq = function(query) {
-	    return window.matchMedia(query).matches;
-	  }
-
-	  if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-	    return true;
-	  }
-
-	  var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
-	  return mq(query);
-  }
-
-  get viewport () {
-    return window.viewport = {
-      width : window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
-      height : window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-    };
-  }
-
-  get screen () {
-    var ratio = window.devicePixelRatio || 1
-    return {
-      pixelWidth:screen.width * ratio,
-      pixelHeight:screen.height * ratio
-    }
-  }
-
-  get notch () {
-
-    if (window.device.orientation == 'landscape') {
-      // If the device is rotated left 90 degrees, assume the notch exists on the left
-      this.element.setAttribute("data-notch", 'left')
-      window.device.notch = 'left'
-    } else if (window.device.orientation == 'upside-down landscape') {
-      // If the device is rotated right 90 degrees, assume the notch exists on the right
-      this.element.setAttribute("data-notch", 'right')
-      window.device.notch = 'right'
-    } else {
-      // If the device is not landscape at all, remove both classes
-      // this.element.removeAttribute("data-notch")
-      // window.device.notch = false;
-      this.element.setAttribute("data-notch", 'top')
-      window.device.notch = 'top'
-    }
-    return window.device.notch;
-  }
-
-  get orientation () {
-
-    let $this = this;
-
-    return {
-
-      get update () {
-
-        // Update the global device.orientation variable
-        window.device.orientation = $this.orientation.check;
-
-        // Update the data-orientation on the HTML element
-        $this.element.setAttribute("data-orientation", window.device.orientation)
-
-        // If the device is notched do a check for 'the notch' and it's position
-        if (window.device.notched) {
-          $this.notch
-        }
-      },
-      get check () {
-        var _o = ''
-
-        if ('orientation' in window) {
-        // Mobile
-          switch (window.orientation) {
-            case 0:
-              _o = 'portrait'
-              break
-            case 90:
-              _o = 'landscape'
-              break
-            case 180:
-              _o = 'upside-down portrait'
-              break
-            case -90:
-              _o = 'upside-down landscape'
-              break
-          }
-        } else if ('orientation' in window.screen) {
-        // Webkit
-          if (screen.orientation.type === 'landscape-primary') {
-            _o = 'landscape'
-          } else if (screen.orientation.type === 'landscape-secondary') {
-            _o = 'upside-down landscape'
-          } else if (screen.orientation.type === 'portrait-primary') {
-            _o = 'portrait'
-          } else if (screen.orientation.type === 'portrait-secondary') {
-            _o = 'upside-down portrait'
-          }
-        } else if ('mozOrientation' in window.screen) {
-        // Firefox
-          if (screen.mozOrientation === 'landscape-primary') {
-            _o = 'landscape'
-          } else if (screen.mozOrientation === 'landscape-secondary') {
-            _o = 'upside-down landscape'
-          } else if (screen.mozOrientation === 'portrait-primary') {
-            _o = 'portrait'
-          } else if (screen.mozOrientation === 'portrait-secondary') {
-            _o = 'upside-down portrait'
-          }
-        } else if ('matchMedia' in window) {
-          var portMediaQuery = window.matchMedia('all and (orientation:portrait)'),
-            landMediaQuery = window.matchMedia('all and (orientation:landscape)')
-
-          if (landMediaQuery.matches) {
-            _o = 'landscape'
-          } else if (portMediaQuery.matches) {
-            _o = 'portrait'
-          }
-        } else {
-          if (screen.width > screen.height) {
-            _o = 'landscape'
-          } else if (screen.width <= screen.height) {
-            _o = 'portrait'
-          } else {
-            return false
-          }
-        }
-
-        return _o
-      }
-    }
-  }
-}
+})();

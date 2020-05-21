@@ -11,23 +11,46 @@ use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 
-
 class Services extends Component {
 
-  public $agent;    // Global variable for easy access for the additional options: https://github.com/jenssegers/agent
-  public $name;     // Global variable for easy access: {{ browser.name }}
-  public $version;  // Global variable for easy access: {{ browser.version }}
+  public $agent;   
+  public $name;     
+  public $version; 
 
-  // If a user agent partially matches any of these strings, the 'check' method
-  // will pass regardless of any other user defined rules.
-  private $agentExceptions = ['APIs-Google', 'Mediapartners-Google', 'AdsBot-Google-Mobile', 'AdsBot-Google-Mobile',
-  'AdsBot-Google', 'Googlebot-Image', 'Googlebot', 'Googlebot-News', 'Googlebot', 'Googlebot-Video',
-  'Mediapartners-Google', 'AdsBot-Google-Mobile-Apps', 'FeedFetcher-Google'];
+  /**
+   * If a user agent partially matches any of these strings, the 'check' method
+   * will pass regardless of any other user defined rules.
+   */ 
+  
+  private $userAgentExceptions = [
+    'APIs-Google', 
+    'Mediapartners-Google', 
+    'AdsBot-Google-Mobile', 
+    'AdsBot-Google-Mobile',
+    'AdsBot-Google', 
+    'Googlebot-Image', 
+    'Googlebot', 
+    'Googlebot-News', 
+    'Googlebot', 
+    'Googlebot-Video',
+    'Mediapartners-Google', 
+    'AdsBot-Google-Mobile-Apps', 
+    'FeedFetcher-Google'
+  ];
+  
+  /**
+   * If one of the above exceptions is a partial match to the users current User Angent,
+   * change the user agent string to this (Chrome 81 Mac)
+   * @see https://developers.whatismybrowser.com/useragents/explore/software_type_specific/web-browser/2
+   */ 
+
+  private $userAgentFallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36';
 
   /**
    * Get the full name of the browser or version number
    * @return object
    */
+
   public function full() {
     $browser = $this->agent->browser();
 
@@ -43,6 +66,7 @@ class Services extends Component {
    * Return data attribute specifically for the html/body tags
    * @return object
    */
+
   public function data() {
 
     $version = $this->version == 0 ? '' : ' '.$this->version;
@@ -63,6 +87,7 @@ class Services extends Component {
    * Checks for browser types and versions
    * @return boolean
    */
+
   public function check() {
 
     // Atleast one browser string arugment should be passed
@@ -70,24 +95,8 @@ class Services extends Component {
       return false;
     }
 
-    $agentExceptions = $this->agentExceptions;
-
-    if ( $config = Craft::$app->getConfig()->getConfigFromFile('agent') ?? false ) {
-      if ( array_key_exists('checkExceptions', $config) ) {
-        $agentExceptions = array_merge($agentExceptions, $config['checkExceptions']);
-      }
-    }
-
-
-
-    $regex = '/('.implode("|",$agentExceptions).')/i';
-    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-
-    if (preg_match($regex, $userAgent)) {
-      return true;
-    }
-
-    if ( empty($userAgent) ) {
+    // Emptry user agent strings will always return false
+    if ( empty($_SERVER['HTTP_USER_AGENT'] ?? '') ) {
       return false;
     }
 
@@ -145,7 +154,7 @@ class Services extends Component {
         // In some cases where user agents versions can't be read,
         // they will default to 0. This can happen on new browser releases.
         // To avoid the new browsers from being blocked, we have to allow these
-        // regardless of any other criteria.
+        // regardless of any version criteria.
         if ($this->version == 0 && $name == $this->name) {
           return true;
         }
@@ -196,6 +205,7 @@ class Services extends Component {
    * @param  string  $redirect   Relative URL to redirect to
    * @param  integer $statuscode Amend the status code
    */
+
   public function redirect($criteria, $redirect = 'browser', $statuscode = 302) {
     if ( !$this->check($criteria) ) {
       $url = UrlHelper::url($redirect);
@@ -207,18 +217,41 @@ class Services extends Component {
    * Innitialisers
    * @return none
    */
+
   public function init() {
+
     $this->agent = new JenssegersAgent();
+
+    if ( $config = Craft::$app->getConfig()->getConfigFromFile('agent') ?? false ) {
+      if ( array_key_exists('userAgentExceptions', $config) ) {
+        $this->userAgentExceptions = array_merge($this->userAgentExceptions, $config['userAgentExceptions']);
+      }
+      if ( array_key_exists('userAgentFallback', $config) ) {
+        $this->userAgentFallback =  $config['userAgentFallback'];
+      }
+    }
+
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+    if ( !empty($userAgent)) {
+      $regex = '/('.implode("|",$this->userAgentExceptions).')/i';
+      if (preg_match($regex, $userAgent)) {
+        $this->agent->setUserAgent($this->userAgentFallback);
+      }
+    }
+
     $this->name = StringHelper::toKebabCase($this->agent->browser());
     $this->version = floor($this->agent->version($this->agent->browser()));
+
   }
 
   /**
-   * Use Jenssegers agent methods as fallbacks should they not be defined in this services class
+   * Exposes Jenssegers agent methods
    * @param  [type] $method [description]
    * @param  [type] $args   [description]
    * @return [type]         [description]
    */
+
   public function __call($method, $args) {
     return call_user_func_array( array($this->agent, $method), $args );
   }
