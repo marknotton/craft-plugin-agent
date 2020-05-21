@@ -199,7 +199,6 @@ Check for mobile device:
 ```
 {{ craft.agent.isMobile() }}
 {{ craft.agent.isTablet() }}
-
 ```
 
 ## Match user agent
