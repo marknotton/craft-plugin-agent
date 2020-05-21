@@ -35,6 +35,7 @@ Most of how this plugin works goes through these two tools.
 - [Mobile Detect](http://mobiledetect.net/)
 
  ## Installation
+
 Compsoer:
 ```
 composer require marknotton/agent
@@ -127,6 +128,7 @@ this will redirect users to a specific template. You can also pass in a status c
 Returns a string in the format of data attributes containing the browser name and version number, platform and device type. Ideal for querying via Javascript or CSS. See the included agent.js file for more information.
 
 #### Example:
+
 ```
 {{ craft.agent.data }}
 ```
@@ -266,7 +268,6 @@ Check if the user is a robot. This uses [jaybizzle/crawler-detect](https://githu
 
 ```
 {{ craft.agent.isRobot() }}
-
 ```
 
 ## Robot name
@@ -275,7 +276,6 @@ Get the robot name.
 
 ```
 {{ craft.agent.robot() }}
-
 ```
 
 ## Extra
@@ -295,10 +295,10 @@ It will bind a number of getters to the window DOM element.
 You can include the agent.js like this:
 
 ```js 
-{%  do  view.registerJsFile(
-craft.app.assetManager.getPublishedUrl('@agent/assets/scripts/agent.js', true),
-{'position' : constant('\\yii\\web\\View::POS_HEAD')}
-)%}
+  {%  do  view.registerJsFile(
+    craft.app.assetManager.getPublishedUrl('@agent/assets/scripts/agent.js', true),
+    {'position' : constant('\\yii\\web\\View::POS_HEAD')}
+  )%}
 ```
 
 Adding the data method to a dom element will available to the methods registered from the Agent.js file
