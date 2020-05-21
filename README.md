@@ -24,7 +24,7 @@ Query the server-side information from the users agent data.
 - [Robot Detection](#robot-detection)
 - [Robot Name](#robot-name)
 - [Extra](#extra)
-- [Agent.js](#agent.js)
+- [Agent.js](#agentjs)
 
 ## Credit
 
