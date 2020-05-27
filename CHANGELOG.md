@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.9
+
+### Added
+- useragent method to return the raw User Agent string 
+- "LinkedInApp" to the list of valid user agents that will always return "true" when using the redirect or cehck functions.
+
 ## 1.1.8 - 2021-05-20
 
 ### Changed

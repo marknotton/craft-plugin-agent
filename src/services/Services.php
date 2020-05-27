@@ -35,7 +35,8 @@ class Services extends Component {
     'Googlebot-Video',
     'Mediapartners-Google', 
     'AdsBot-Google-Mobile-Apps', 
-    'FeedFetcher-Google'
+    'FeedFetcher-Google',
+    'LinkedInApp'
   ];
   
   /**
@@ -96,7 +97,7 @@ class Services extends Component {
     }
 
     // Emptry user agent strings will always return false
-    if ( empty($_SERVER['HTTP_USER_AGENT'] ?? '') ) {
+    if ( empty($this->useragent()) ) {
       return false;
     }
 
@@ -197,6 +198,14 @@ class Services extends Component {
 
     return $valid;
 
+  }
+
+  /**
+   * Returns the users User Agent string
+   */
+
+  public function useragent() {
+    return $_SERVER['HTTP_USER_AGENT'] ?? '';
   }
 
   /**

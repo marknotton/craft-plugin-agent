@@ -26,7 +26,7 @@ class Agent extends Plugin {
 
   public static $plugin;
 
-  public $schemaVersion = '1.1.6';
+  public $schemaVersion = '1.1.9';
 
   public function init() {
 
