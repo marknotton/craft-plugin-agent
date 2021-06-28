@@ -114,7 +114,7 @@ class Services extends JenssegersAgent {
       // Check all the given settings
       foreach (explode(' ', $argument) as &$setting) {
 
-        if (preg_match('[<|>|=>|<=|==]', $setting)) {
+        if (preg_match('[<|>|=>|<=|==|!=]', $setting)) {
           // If a greater or less than condition is passed
           $rule['condition'] = $setting;
         } else if (ctype_digit($setting)) {
@@ -171,6 +171,9 @@ class Services extends JenssegersAgent {
               break;
             case ">":
               $valid = version_compare($browserVersion, $version, '>');
+              break;
+            case "!=":
+              $valid = version_compare($browserVersion, $version, '!=');
               break;
             case "==":
               $valid = version_compare($browserVersion, $version, '==');
