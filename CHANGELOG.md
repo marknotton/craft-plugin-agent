@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 1.1.8 - 2021-05-20
+
+## 1.2.0 - 2021-06-28
+
+### Added
+- A '==' condition can now be used with comparing browser versions
+- An extension to JenssegersAgent `version` function that now accepts the "simplify" param which will floor the unit to 0 decimal places. So browser versions like '91.0.4472.114' will be returned as '91'. This is disabled by default.
+
+### Changed
+- The Agent service now extrends JenssegersAgent utility correctly. Previously all methods and properties were being forwarded via a magic method which is completely unecessary. This should help significantly when trying to trace errors.
+
+### Fixed
+- [Issue 11](https://github.com/marknotton/craft-plugin-agent/issues/11) Fixed an error being thrown relating to how version units are handled when passed as a string.
+
+### Updated
+- The data() method was a clanky string concatenation that is now be handled more elegantly with Crafts own 'renderTagAttributes' HTML Helper.
+- All instances where version numbers are compared, the native `version_compare` PHP method is used. 
+
+### Removed
+- Variables class. It wasn't needed and is managed correctly via the base init method. All variables are still accessible. 
+
+## 1.1.8 - 2020-05-21
 
 ### Changed
 - User agent exceptiones are now handled earlier on in the Services init method, rather than each time the 'Check' method is called.

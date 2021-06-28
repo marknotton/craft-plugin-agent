@@ -2,20 +2,15 @@
 
 namespace marknotton\agent\services;
 
-use marknotton\agent\Agent;
 use Jenssegers\Agent\Agent as JenssegersAgent;
 
 use Craft;
-use craft\base\Component;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
+use craft\helpers\Html;
 
-class Services extends Component {
-
-  public $agent;   
-  public $name;     
-  public $version; 
+class Services extends JenssegersAgent {
 
   /**
    * If a user agent partially matches any of these strings, the 'check' method
@@ -52,11 +47,11 @@ class Services extends Component {
    */
 
   public function full() {
-    $browser = $this->agent->browser();
+    $browser = $this->browser();
 
     $agent = [
       "name" => $browser == 'IE' ? "Internet Explorer" : $browser,
-      "version" => $this->agent->version($browser),
+      "version" => $this->version($browser),
     ];
 
     return $agent;
@@ -69,17 +64,19 @@ class Services extends Component {
 
   public function data() {
 
-    $version = $this->version == 0 ? '' : ' '.$this->version;
-    $data = 'data-browser="'.$this->name.$version.'" ';
-    $data .= ' data-platform="'.str_replace(' ', '', strtolower($this->agent->platform())).'" ';
+    $attributes = [ 
+      'browser'  => StringHelper::toKebabCase(parent::browser()).' '.self::version(parent::browser(), null, true),
+      'platform' => StringHelper::toKebabCase(parent::platform()),
+      'device'   => StringHelper::toKebabCase(parent::deviceType())
+    ];
 
-    if ( $this->agent->isDesktop() ) { $device = 'desktop'; }
-    else if ( $this->agent->isTablet() ) { $device = 'tablet'; }
-    else if ( $this->agent->isMobile() ) { $device = 'mobile'; }
-    else { $device = null; }
-    if (!is_null($device)) { $data .= ' data-device="'.strtolower($device).'" '; }
+    if ( $attributes['device'] == 'phone' ) {
+      $attributes['device'] = 'mobile';
+    }
 
-    return Template::raw($data);
+    $attributesAsString = Html::renderTagAttributes(['data' => $attributes]);
+
+    return Template::raw($attributesAsString);
   }
 
 
@@ -95,7 +92,7 @@ class Services extends Component {
       return false;
     }
 
-    // Emptry user agent strings will always return false
+    // Empty user agent strings will always return false
     if ( empty($_SERVER['HTTP_USER_AGENT'] ?? '') ) {
       return false;
     }
@@ -117,7 +114,7 @@ class Services extends Component {
       // Check all the given settings
       foreach (explode(' ', $argument) as &$setting) {
 
-        if (preg_match('[<|>|=>|<=]', $setting)) {
+        if (preg_match('[<|>|=>|<=|==]', $setting)) {
           // If a greater or less than condition is passed
           $rule['condition'] = $setting;
         } else if (ctype_digit($setting)) {
@@ -133,14 +130,17 @@ class Services extends Component {
       array_push($rules, $rule);
     }
 
+    $browserName = StringHelper::toKebabCase($this->browser());
+    $browserVersion = (string) $this->version($this->browser(), true);
+
     // Now we have all the rules and conditions...
 
     if (!empty($rules)) {
 
-      $index = array_search($this->name, array_column($rules, 'name')) ?? false;
+      $index = array_search($browserName, array_column($rules, 'name')) ?? false;
 
       // If neither agent name or version can be found, return false. 
-      if ( $index === false && $this->version == 0) {
+      if ( $index === false && version_compare($browserVersion, 0) == 0) {
         return false;
       }
 
@@ -151,51 +151,78 @@ class Services extends Component {
         $condition = $rules[$index]['condition'] ?? false;
         $version   = $rules[$index]['version'] ?? false;
 
+
         // In some cases where user agents versions can't be read,
         // they will default to 0. This can happen on new browser releases.
         // To avoid the new browsers from being blocked, we have to allow these
         // regardless of any version criteria.
-        if ($this->version == 0 && $name == $this->name) {
+        if ($browserVersion == 0 && $name == $browserName) {
           return true;
         }
 
         if ($condition && $version) {
 
-          // echo 'This is ' . $name . ' version ' . $this->version . '. And this website supports anything that is ' . $condition . ' version ' . $version . '<br />';
+          // echo 'This is ' . $name . ' version ' . $browserVersion . '. And this website supports anything that is ' . $condition . ' version ' . $version . '<br />';
 
           // If there is a condition to validate
           switch ($condition) {
             case ">=":
-              $valid = $this->version >= $version;
+              $valid = version_compare($browserVersion, $version, '>=');
               break;
             case ">":
-              $valid = $this->version > $version;
+              $valid = version_compare($browserVersion, $version, '>');
+              break;
+            case "==":
+              $valid = version_compare($browserVersion, $version, '==');
               break;
             case "<=":
-              $valid = $this->version <= $version;
+              $valid = version_compare($browserVersion, $version, '<=');
               break;
             case "<":
-              $valid = $this->version < $version;
+              $valid = version_compare($browserVersion, $version, '<');
               break;
           }
 
         } elseif ($version) {
 
-          // echo 'This is ' . $name . ' version ' . $this->version . '. And this website only supports version '. $version . '<br />';
+          // echo 'This is ' . $name . ' version ' . $browserVersion . '. And this website only supports version '. $version . '<br />';
 
-          $valid = $version == $this->version;
+          $valid = version_compare($browserVersion, $version, '==');
 
         } else {
 
-          // echo 'This is ' . $name . ' version ' . $this->version . '. And this website only supports any version of this browser.<br />';
+          // echo 'This is ' . $name . ' version ' . $browserVersion . '. And this website only supports any version of this browser.<br />';
 
-          $valid = $name == $this->name;
+          $valid = $name == $browserName;
 
         }
       }
     }
 
     return $valid;
+
+  }
+
+  /**
+   * Adjust version numbers without any decimal places 
+   * @param Bool $simplify set to true if you want to return the roduned down version number 
+   * @example Php -  Agent::version()
+   * @example Twig - {{ agent.version() }}
+   * @return Number
+   */
+  public function version($propertyName = null, $simplify = false, $type = self::VERSION_TYPE_STRING) {
+
+    if ( is_null($propertyName) ) { $propertyName = parent::browser(); }
+
+    if ( is_null($type)) { $type = self::VERSION_TYPE_STRING; }
+    
+    $version = parent::version($propertyName, $type);
+
+    if ($simplify && (intval($version) == $version || floatval($version) == $version)) {
+      $version = floor($version);
+    }
+
+    return $version;
 
   }
 
@@ -220,8 +247,6 @@ class Services extends Component {
 
   public function init() {
 
-    $this->agent = new JenssegersAgent();
-
     if ( $config = Craft::$app->getConfig()->getConfigFromFile('agent') ?? false ) {
       if ( array_key_exists('userAgentExceptions', $config) ) {
         $this->userAgentExceptions = array_merge($this->userAgentExceptions, $config['userAgentExceptions']);
@@ -236,23 +261,11 @@ class Services extends Component {
     if ( !empty($userAgent)) {
       $regex = '/('.implode("|",$this->userAgentExceptions).')/i';
       if (preg_match($regex, $userAgent)) {
-        $this->agent->setUserAgent($this->userAgentFallback);
+        $this->setUserAgent($this->userAgentFallback);
       }
     }
 
-    $this->name = StringHelper::toKebabCase($this->agent->browser());
-    $this->version = floor($this->agent->version($this->agent->browser()));
-
   }
 
-  /**
-   * Exposes Jenssegers agent methods
-   * @param  [type] $method [description]
-   * @param  [type] $args   [description]
-   * @return [type]         [description]
-   */
 
-  public function __call($method, $args) {
-    return call_user_func_array( array($this->agent, $method), $args );
-  }
 }

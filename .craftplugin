@@ -1,6 +1,6 @@
 {"pluginName":"Agent",
 "pluginDescription":"Query the server-side information from the users agent data.",
-"pluginVersion":"1.1.4",
+"pluginVersion":"1.2.0",
 "pluginAuthorName":"Mark Notton",
 "pluginVendorName":"marknotton",
 "pluginAuthorUrl":"https://github.com/marknotton/craft-plugin-agent",

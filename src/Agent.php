@@ -11,12 +11,9 @@
 namespace marknotton\agent;
 
 use marknotton\agent\services\Services;
-use marknotton\agent\variables\Variables;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\web\twig\variables\CraftVariable;
 
 use yii\base\Event;
@@ -26,7 +23,7 @@ class Agent extends Plugin {
 
   public static $plugin;
 
-  public $schemaVersion = '1.1.6';
+  public $schemaVersion = '1.2.0';
 
   public function init() {
 
@@ -36,7 +33,7 @@ class Agent extends Plugin {
     Craft::setAlias('@agent', $this->getBasePath());
 
     $this->setComponents([
-      'services' => \marknotton\agent\services\Services::class,
+      'services' => Services::class,
     ]);
 
     $twig = Craft::$app->view->getTwig(null, ['safe_mode' => false]);
@@ -47,7 +44,7 @@ class Agent extends Plugin {
       CraftVariable::EVENT_INIT,
       function (Event $event) {
         $variable = $event->sender;
-        $variable->set('agent', Variables::class);
+        $variable->set('agent', Services::class);
       }
     );
 

@@ -177,7 +177,8 @@ MobileDetect recently added a `version` method that can get the version number f
 
 ```
 {% set browser  = craft.agent.browser() %}
-{% set version  = craft.agent.version(browser) %}
+{% set version  = craft.agent.version(browser) %} - 91.0.4472.114
+{% set version  = craft.agent.version(null, true) %} - 91
 {% set platform = craft.agent.platform() %}
 {% set version  = craft.agent.version(platform) %}
 ```
