@@ -1,45 +1,40 @@
 {
     "name": "marknotton/agent",
-    "description": "Query the server-side information from the users agent data.",
+    "description": "Query server-side information from the users agent data.",
     "type": "craft-plugin",
-    "version": "1.2.0",
+    "version": "4.0.0",
     "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "craft-plugin",
-        "agent"
+      "craft",
+      "cms",
+      "craftcms",
+      "craft-plugin",
+      "agent"
     ],
     "support": {
-        "docs": "https://github.com/marknotton/craft-plugin-agent/blob/master/README.md",
-        "issues": "https://github.com/marknotton/craft-plugin-agent/issues"
+      "docs": "https://github.com/marknotton/craft-plugin-agent/blob/master/README.md",
+      "issues": "https://github.com/marknotton/craft-plugin-agent/issues"
     },
     "license": "MIT",
     "authors": [
-        {
-            "name": "Mark Notton",
-            "homepage": "https://github.com/marknotton/craft-plugin-agent"
-        }
+      {
+        "name": "Mark Notton",
+        "homepage": "https://github.com/marknotton/craft-plugin-agent"
+      }
     ],
     "require": {
-      "craftcms/cms": "^3.0.0",
-      "jenssegers/agent": "^2.6.3"
+      "php": "^8.0.2",
+      "craftcms/cms": "^4.0.0",
+      "jenssegers/agent": "^2.6.4"
     },
     "autoload": {
-        "psr-4": {
-          "marknotton\\agent\\": "src/"
-        }
+      "psr-4": {
+        "marknotton\\agent\\": "src/"
+      }
     },
     "extra": {
-        "name": "Agent",
-        "handle": "agent",
-        "schemaVersion": "1.2.0",
-        "hasCpSettings": false,
-        "hasCpSection": false,
-        "changelogUrl": "https://github.com/marknotton/craft-plugin-agent/blob/master/CHANGELOG.md",
-        "components": {
-          "agentService": "marknotton\\agent\\services\\AgentService"
-        },
-        "class": "marknotton\\agent\\Agent"
+      "name": "Agent",
+      "handle": "agent",
+      "changelogUrl": "https://github.com/marknotton/craft-plugin-agent/blob/master/CHANGELOG.md",
+      "class": "marknotton\\agent\\Agent"
     }
 }

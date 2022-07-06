@@ -19,43 +19,40 @@ use craft\web\twig\variables\CraftVariable;
 use yii\base\Event;
 
 
-class Agent extends Plugin {
+class Agent extends Plugin 
+{
+  /**
+   * @var Agent
+   */
+  public static Plugin $plugin;
+  
+  /**
+  * @var String
+  */
+  public string $schemaVersion = '1.0.0';
 
-  public static $plugin;
-
-  public $schemaVersion = '1.2.0';
-
-  public function init() {
+  public function init(): void
+  {
 
     parent::init();
+
     self::$plugin = $this;
 
     Craft::setAlias('@agent', $this->getBasePath());
 
-    $this->setComponents([
-      'services' => Services::class,
-    ]);
+    $this->setComponents(['services' => Services::class]);
 
-    $twig = Craft::$app->view->getTwig(null, ['safe_mode' => false]);
-    $twig->addGlobal('agent', Agent::$plugin->services);
-
+    Craft::$app->view->getTwig()->addGlobal('agent', Agent::$plugin->services);
+    
     Event::on(
       CraftVariable::class,
       CraftVariable::EVENT_INIT,
-      function (Event $event) {
+      static function (Event $event) {
         $variable = $event->sender;
         $variable->set('agent', Services::class);
       }
     );
 
-    Craft::info(
-      Craft::t(
-        'agent',
-        '{name} plugin loaded',
-        ['name' => $this->name]
-      ),
-      __METHOD__
-    );
   }
 
 }

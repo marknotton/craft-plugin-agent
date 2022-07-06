@@ -1,8 +1,8 @@
-<img  src="https://i.imgur.com/RcNoQQa.png"  alt="Agent"  align="left"  height="60" />
+<img  src="https://i.imgur.com/RcNoQQa.png"  alt="Agent" align="left"  height="60" />
 
-# Agent plugin for Craft CMS 3
+# Agent plugin for Craft CMS
 
-Query the server-side information from the users agent data.
+Query server-side information from the users agent data.
 
 ## Table of Contents
 

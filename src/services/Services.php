@@ -9,6 +9,7 @@ use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\Html;
+use Twig\Markup;
 
 class Services extends JenssegersAgent {
 
@@ -16,8 +17,7 @@ class Services extends JenssegersAgent {
    * If a user agent partially matches any of these strings, the 'check' method
    * will pass regardless of any other user defined rules.
    */ 
-  
-  private $userAgentExceptions = [
+  private array $userAgentExceptions = [
     'APIs-Google', 
     'Mediapartners-Google', 
     'AdsBot-Google-Mobile', 
@@ -39,14 +39,15 @@ class Services extends JenssegersAgent {
    * @see https://developers.whatismybrowser.com/useragents/explore/software_type_specific/web-browser/2
    */ 
 
-  private $userAgentFallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36';
+  private string $userAgentFallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36';
 
   /**
    * Get the full name of the browser or version number
    * @return object
    */
 
-  public function full() {
+  public function full(): array
+  {
     $browser = $this->browser();
 
     $agent = [
@@ -59,10 +60,11 @@ class Services extends JenssegersAgent {
 
   /**
    * Return data attribute specifically for the html/body tags
-   * @return object
+   * @return Markup
    */
 
-  public function data() {
+  public function data(): Markup 
+  {
 
     $attributes = [ 
       'browser'  => StringHelper::toKebabCase(parent::browser()).' '.self::version(parent::browser(), null, true),
@@ -82,10 +84,11 @@ class Services extends JenssegersAgent {
 
   /**
    * Checks for browser types and versions
-   * @return boolean
+   * @return bool
    */
 
-  public function check() {
+  public function check(): bool
+  {
 
     // Atleast one browser string arugment should be passed
     if ( func_num_args() < 1 ){
@@ -211,10 +214,10 @@ class Services extends JenssegersAgent {
    * @param Bool $simplify set to true if you want to return the roduned down version number 
    * @example Php -  Agent::version()
    * @example Twig - {{ agent.version() }}
-   * @return Number
+   * @return string
    */
-  public function version($propertyName = null, $simplify = false, $type = self::VERSION_TYPE_STRING) {
-
+  public function version($propertyName = null, $simplify = false, $type = self::VERSION_TYPE_STRING): string
+  {
     if ( is_null($propertyName) ) { $propertyName = parent::browser(); }
 
     if ( is_null($type)) { $type = self::VERSION_TYPE_STRING; }
@@ -226,7 +229,6 @@ class Services extends JenssegersAgent {
     }
 
     return $version;
-
   }
 
   /**
@@ -235,8 +237,8 @@ class Services extends JenssegersAgent {
    * @param  string  $redirect   Relative URL to redirect to
    * @param  integer $statuscode Amend the status code
    */
-
-  public function redirect($criteria, $redirect = 'browser', $statuscode = 302) {
+  public function redirect($criteria, $redirect = 'browser', $statuscode = 302): void
+  {
     if ( !$this->check($criteria) ) {
       $url = UrlHelper::url($redirect);
       Craft::$app->getResponse()->redirect($url, $statuscode);
@@ -245,11 +247,9 @@ class Services extends JenssegersAgent {
 
   /**
    * Innitialisers
-   * @return none
    */
-
-  public function init() {
-
+  public function init(): void
+  {
     if ( $config = Craft::$app->getConfig()->getConfigFromFile('agent') ?? false ) {
       if ( array_key_exists('userAgentExceptions', $config) ) {
         $this->userAgentExceptions = array_merge($this->userAgentExceptions, $config['userAgentExceptions']);
@@ -267,7 +267,6 @@ class Services extends JenssegersAgent {
         $this->setUserAgent($this->userAgentFallback);
       }
     }
-
   }
 
 
