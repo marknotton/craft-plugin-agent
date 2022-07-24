@@ -1,85 +1,54 @@
-<img  src="https://i.imgur.com/RcNoQQa.png"  alt="Agent" align="left"  height="60" />
 
-# Agent plugin for Craft CMS
+![Agent: An extension to Jens Segers Agent tool for querying user agent data.](https://i.imgur.com/uK2FnnU.jpg)
 
-Query server-side information from the users agent data.
+## Installation
 
-## Table of Contents
-
-- [Credit](#dependencies)
-- [Installation](#installation)
-- [Check](#check)
-- [User Agent Exceptions and Fallback](#user-agent-exceptions-and-fallback)
-- [Redirect](#redirect)
-- [Data](#data)
-- [Full](#full)
-- [Browser/platform version](#browserplatform-version)
-- [Magic is-method](#magic-is-method)
-- [Mobile Detection](#mobile-detection)
-- [Match User Agent](#match-user-agent)
-- [Accept Languages](#accept-languages)
-- [Device Name](#device-name)
-- [Desktop Detection](#desktop-detection)
-- [Phone Detection](#phone-detection)
-- [Robot Detection](#robot-detection)
-- [Robot Name](#robot-name)
-- [Extra](#extra)
-- [Agent.js](#agentjs)
-
-## Credit
-
-Agent is pretty much just a wrapper for the following classes. 
-Most of how this plugin works goes through these two tools.
-
-- [Agent by Jens Segers](https://github.com/jenssegers/agent)
-- [Mobile Detect](http://mobiledetect.net/)
-
- ## Installation
-
-Compsoer:
 ```
 composer require marknotton/agent
 ```
 
-## Check
+## Official Documentation
 
-Perform a number of checks to determine wether the users browser type is a match. Returns ```boolean```.
+This really is just an extension to Jens Segers Agent utility. Refer to their [documentation](https://github.com/jenssegers/agent) for all available methods.
 
-#### Example 1:
+## Methods
 
-Returns true if current browser is either 'IE, Edge, or Firefox'
+Whilst I have tried to keep this plugin as lean as possible, I have extended Jens Segers Agent utility by including some of my own methods. 
 
-```
-{{ craft.agent.check('ie', 'edge', 'firefox') }}
-```
+### Check
 
-#### Example 2:
+Perform a checks to determine the users browser type is a match.  
 
-Returns true if current browser is greater than IE 9
-
-```
-{{ craft.agent.check('ie > 9') }}
+##### Example 1:
+Returns true if current browser is either Edge **or** Firefox'
+```twig
+{{ craft.agent.check('edge', 'firefox') }}
 ```
 
-#### Example 3:
+##### Example 2:
+Returns true if current browser Chrome and it's version is greater than 100
 
-Returns true if current browser is greater or equal to IE 9
-
+```twig
+{{ craft.agent.check('chrome > 100') }}
 ```
-{{ craft.agent.check('ie => 9') }}
+##### Example 3:
+Returns true if current browser is Chrome and it's version is greater or equal than 100 
+
+```twig
+{{ craft.agent.check('chrome => 100') }}
+```
+
+##### Example 4:  
+
+Returns true if current browser is either, IE version 9, Chrome version 50 or above, or any version of Firefox  
+
+```twig
+{{ craft.agent.check('ie 9', 'chrome > 49', 'firefox') }}
 ```  
 
-#### Example 4:
-
-Returns true if current browser is either, IE version 9, Chrome version 50 or above, or any version of Firefox
-
-```
-{{ craft.agent.check('ie 9', 'chrome > 49', 'firefox') }}
-```
-
-## User Agent Exceptions and Fallback:
-
-If the User Agent contains any of the following exceptions, even partially, then [Jenssegers "setUserAgent"](https://github.com/jenssegers/agent#basic-usage) method is used to edit the User Agent string to a fallback. The default fallbacks to a "Chrome 81 Mac" string which can be modified in the Agents config file. This will not amend your true browser User Agent, it only changes the user agent string referenced in this plugin. The intended use case for this is to prevent bots from seeing error messages when the [Check](#check) method or other queries are used. The follow bots are part of the predefined exceptions list:
+### User agent whitelist and fallback:
+ 
+If the User Agent contains any of the following whitelist exceptions, even partially, then [Jenssegers "setUserAgent"](https://github.com/jenssegers/agent#basic-usage) method is used to edit the User Agent string to a fallback. The fallback user agent is "Chrome 103 for Mac"; which can be modified in plugin config file. This will not amend your true browser User Agent, it only changes the user agent string referenced in this plugin. The intended use case for this is to prevent bots from seeing error messages when the [Check](#check) method or other queries are used. The follow bots are part of the predefined exceptions list:  
 
 - APIs-Google
 - Mediapartners-Google
@@ -95,226 +64,149 @@ If the User Agent contains any of the following exceptions, even partially, then
 - AdsBot-Google-Mobile-Apps
 - FeedFetcher-Google  
 
-You can add your own by creating an `agent.php` config file in your projects `configs` directory. 
+You can add your own by creating an `agent.php` config file in your projects `configs` directory.
 
-```
-<?php
+```php
 return [
 'userAgentExceptions' => ['codingBox'],
-'userAgentFallback' => "<insert agent string here>"
-]; 
+'userAgentFallback'   => "<insert agent string here>"
+];
 ```
 
-## Redirect
- 
+### Redirect
+
 Redirect users if their current agent doesn't meet any of these conditions. Following the same syntax as the 'check' function,
-this will redirect users to a specific template. You can also pass in a status code too.  
 
-```
+this will redirect users to a specific template. You can also pass in a status code too.
+
+```twig
 {% set criteria = [
- 'ie 11',
- 'chrome > 55',
- 'firefox > 44',
- 'safari >= 7',
- 'edge >= 15',
- 'opera > 50'
+  'ie 11',
+  'chrome > 55',
+  'firefox > 44',
+  'safari >= 7',
+  'edge >= 15',
+  'opera > 50'
 ] %}
 
 {{ craft.agent.redirect(criteria, 'no-support.twig', 302) }}
 ```
 
-## Data
+### Data  
 
-Returns a string in the format of data attributes containing the browser name and version number, platform and device type. Ideal for querying via Javascript or CSS. See the included agent.js file for more information.
+> Deprecation Warning: This method will be removed in a future release. 
 
-#### Example:
+Depending on how you're managing your template caching, this method could break as the attributes are inline. You should inject the agent.min.js file or enable the 'setAttributesToHTML' method via the `/configs/app.php` to work around caching issues. See the main readme for details.
 
+If you really need it after this method has been removed, I suggest you define your attributes using Crafts own [attr method](https://craftcms.com/docs/4.x/dev/functions.html#attr):
+
+```twig
+<html {{ attr({ data : craft.agent.commonData() })}}>
 ```
-{{ craft.agent.data }}
+
+Soon-to-be deprecated method :
+
+```twig
+<html {{ craft.agent.data }}>
 ```
 
-#### Example Output:
+##### Example Output:
 
 ```html
-data-browser="chrome 81" data-platform="osx" data-device="desktop"
+data-browser-name="chrome" data-browser-version="103" data-device="desktop"
 ```
+ 
 
-#### Example Output: jQuery Usage
+## Set user agent data attributes in `<html>` tag 
 
-```js
-if ( $('html[data-browser^=chrome]').length ) {...}
-```  
+> This feature only works on Craft 3. Support for Craft 4 is in the works.
 
-#### Example Output: CSS Usage
+To have the user agents device name, version and device type added directly to the `<html>` element after the template has rendered, you can define the setAttributesToHTML method in your `config/app.php` file like so: 
+
+```php
+'on afterRequest' => 'marknotton\agent\Agent::setAttributesToHTML'
+```
+This circumvents some templating caching issues and the end result will look like something like this:
+
+![Agent HTML Tag](https://i.imgur.com/uaxvnL4.png)
+
+This opens up some options for browser specific styling with css:
 
 ```css
-html[data-browser^=chrome] {...}
+	html[data-browser-name="safari"] article img { ... }
 ```
 
-## Full
-Simply returns the name and version of the users browser.
-Returns browser name and version number in an array
+This will omit flashes of unstyled content because the bespoke styling isn't dependant on Javascript, it happens server side. 
+However if this isn't an option; you can include the agent.js helper instead. 
 
+
+## agent.js
+
+There is a small [IIFE](https://en.wikipedia.org/wiki/Immediately_invoked_function_expression) agent.min.js (< 0.7k) file that can be injected directly into the doms `<head>`. You'll need to enable this via the plugin settings. 
+
+![Agent CMS Toggle Option](https://i.imgur.com/z7Q9Ynl.png)
+
+This will automatically inject a `<script>` tag into the document `<head>`. It will define global properties to the window object for the browser name, version, and different device types.
+
+|  |  |
+|--|--|
+| `window.browser.name` | string |
+| `window.browser.version` | int |
+| `window.device` | string |
+| `window.isPhone` | bool |
+| `window.isTable` | bool |
+| `window.isDesktop` | bool |
+
+Alternatively you can register the the Agent.js asset manually:
+
+Twig: 
+```twig 
+{{ craft.agent.registerAgentJsFile(<useCompressedFile:bool>, <position:string>) }}
 ```
-{{ craft.agent.full }}
-```
-
-Returns browser name
-
-```
-{{ craft.agent.full.name }}
-```
-
-Returns version number
-
-```
-{{ craft.agent.full.version }}
-```
-
-## Browser/platform version
-
-MobileDetect recently added a `version` method that can get the version number for components. To get the browser or platform version you can use:
-
-```
-{% set browser  = craft.agent.browser() %}
-{% set version  = craft.agent.version(browser) %} - 91.0.4472.114
-{% set version  = craft.agent.version(null, true) %} - 91
-{% set platform = craft.agent.platform() %}
-{% set version  = craft.agent.version(platform) %}
-```
-
-*Note, the version method is still in beta, so it might not return the correct result.*
-
-## Magic is-method
-
-Magic method that does the same as the previous `is()` method:
-
-```
-{{ craft.agent.isAndroidOS() }}
-{{ craft.agent.isNexus() }}
-{{ craft.agent.isSafari() }}
+Php:
+```php
+Agent::registerAgentJsFile(<useCompressedFile:bool>, <position:string>);
 ```
 
-## Mobile detection
+## API Endpoint
 
-Check for mobile device:
+The endpoint `/api/agent` will return a json object of potentially useful data; for example:
 
-```
-{{ craft.agent.isMobile() }}
-{{ craft.agent.isTablet() }}
-```
-
-## Match user agent
-
-Search the user agent with a regular expression:
-
-```
-{{ craft.agent.match('regexp') }}
-```
-
-## Accept languages
-
-Get the browser's accept languages. Example:
-
-```
-{% set languages = craft.agent.languages() %}
-// ['nl-nl', 'nl', 'en-us', 'en']
+  ```json
+{
+	"browserName": "chrome",
+	"browserVersion": "103",
+	"device": "desktop",
+	"isDesktop": true,
+	"isRobot": false,
+	"isPhone": false,
+	"isMobile": false,
+	"isTablet": false
+}
 ```
 
-## Device name
+## Breaking Changes
 
-Get the device name, if mobile. (iPhone, Nexus, AsusTablet, ...)
+There have been a few minor changes from the previous version of Agent 1.2.0. The following list highlights the most important of these:
 
-```
-{{ craft.agent.device() }}
-```
+1. Script file moved from `/vendor/marknotton/agent/src/assets/scripts/agent.js` to `/vendor/marknotton/agent/src/assets/agent.js`
 
-## Operating system name
+2. Script file now has a minified file version `agent.min.js`
 
-Get the operating system. (Ubuntu, Windows, OS X, ...)
+3. Script window object properties have changed:
+- `window.mobile` is now `window.isPhone`
+- `window.tablet` is now `window.isTablet`
+- `window.desktop` is now `window.isDesktop`
+- `window.platform` has been removed
 
-```
-{{ craft.agent.platform() }}
-```
+4. Script file refers to an api endpoint (`/api/agent`) to fetch data if it's not available from the `<html>` or `<script` tags.  The [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) is required. 
 
-## Browser name
+5. Version numbers are floated, so instead of `103.0.5060` it will just be `103`
 
-Get the browser name. (Chrome, IE, Safari, Firefox, ...)
+6. Removed ```{{ craft.agent.full }} ``` method. The individual ```{{ craft.agent.browser }} ``` and ```{{ craft.agent.version }}``` methods should suffice. 
 
-```
-{{ craft.agent.browser() }}
-```
+7.  ```{{ craft.agent.data }}``` no longer includes the platform and will no longer return the device 'mobile', and will instead stick to the native value of 'phone'. Please note, this method will be deprecated in the future release too. 
 
-## Desktop detection
+8. The ```{{ craft.agent.version }}``` will float and floor the version number by default. If you want to full string as it was in the previous version you'll have to define that specifically : ```{{ craft.agent.version(null, 'string') }}```
 
-Check if the user is using a desktop device.
-
-```
-{{ craft.agent.isDesktop() }}
-```
-
-*This checks if a user is not a mobile device, tablet or robot.*
-
-## Phone detection
-
-Check if the user is using a phone device.
-
-```
-{{ craft.agent.isPhone() }}
-```
-
-## Robot detection
-
-Check if the user is a robot. This uses [jaybizzle/crawler-detect](https://github.com/JayBizzle/Crawler-Detect) to do the actual robot detection.
-
-```
-{{ craft.agent.isRobot() }}
-```
-
-## Robot name
-
-Get the robot name.
-
-```
-{{ craft.agent.robot() }}
-```
-
-## Extra
-
-All Agent service methods are accessible without the need to define 'craft.'. So all of the functions above can be called like this too:
-
-```
-{{ agent.browser() }}
-```
-
-## Agent.js
-
-Agent comes with a small IIFE Javascript file to help make it easier to query some of the user agent data.
-
-It will bind a number of getters to the window DOM element.
-
-You can include the agent.js like this:
-
-```js 
-  {%  do  view.registerJsFile(
-    craft.app.assetManager.getPublishedUrl('@agent/assets/scripts/agent.js', true),
-    {'position' : constant('\\yii\\web\\View::POS_HEAD')}
-  )%}
-```
-
-Adding the data method to a dom element will available to the methods registered from the Agent.js file
-
-```html
-<html {{ craft.agent.data|default  }}> 
-```
-
-Now you have access to these methods:
-  
-| Function | Return Example | Description | 
-| -- | -- | -- |
-| browser | ```{name: "chrome", version: "66"}``` | Gets the users browser name and version number |
-| platform | ```osx``` | Gets the users platform type |
-| mobile | ```true``` | Checks if the user is on a mobile device |
-| tablet | ```true``` | Checks if the user is on a tablet device |
-| desktop | ```true``` | Checks if the user is on a desktop |
-  
+9. The config property `userAgentExceptions` is now `userAgentWhitelist`
