@@ -1,13 +1,14 @@
-{"pluginName":"Agent",
-"pluginDescription":"Query the server-side information from the users agent data.",
-"pluginVersion":"1.2.0",
+{
+"pluginName":"Agent",
+"pluginDescription":"An extension to Jens Segers Agent tool for querying user agent data.",
+"pluginVersion":"4.0.0",
 "pluginAuthorName":"Mark Notton",
 "pluginVendorName":"marknotton",
 "pluginAuthorUrl":"https://github.com/marknotton/craft-plugin-agent",
 "pluginAuthorGithub":"craft-plugin-agent",
 "codeComments":"",
-"pluginComponents":["services",
-"variables"],"consolecommandName":"",
+"pluginComponents":["services"],
+"consolecommandName":"",
 "controllerName":"",
 "cpsectionName":"",
 "elementName":"",
@@ -19,4 +20,5 @@
 "taskName":"",
 "utilityName":"",
 "widgetName":"",
-"apiVersion":"api_version_3_0"}
+"apiVersion":"api_version_3_0"
+}

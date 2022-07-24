@@ -1,0 +1,129 @@
+<h3>"Is" Methods</h3>
+<p>Check for a certain property in the user agent.</p>
+
+<pre>
+{{"
+{{ craft.agent.is('Windows') }}
+{{ craft.agent.is('Firefox') }}
+{{ craft.agent.is('iPhone') }}
+{{ craft.agent.is('OS X') }}
+"}}
+</pre>
+
+<p>{{ craft.agent.is('Windows') ? 'Is Windows' : 'Is NOT Windows' }}</p>
+<p>{{ craft.agent.is('Firefox') ? 'Is Firefox' : 'Is NOT Firefox' }}</p>
+<p>{{ craft.agent.is('iPhone') ? 'Is iPhone' : 'Is NOT iPhone' }}</p>
+<p>{{ craft.agent.is('OS X') ? 'Is OS X' : 'Is NOT OS X' }}</p>
+
+<hr>
+
+<h3>Magic method that does the same as the previous is() method:</h3>
+
+<pre>
+{{ "
+{{ craft.agent.isAndroidOS() }}
+{{ craft.agent.isNexus() }}
+{{ craft.agent.isSafari() }}
+"}}
+</pre>
+
+<p>{{ craft.agent.isAndroidOS() ? 'Is Android OS' : 'Is NOT Android OS' }}</p>
+<p>{{ craft.agent.isNexus() ? 'Is Nexus' : 'Is NOT Nexus' }}</p>
+<p>{{ craft.agent.isSafari() ? 'Is Safari' : 'Is NOT Safari' }}</p>
+
+<hr>
+
+<h3>Mobile detection</h3>
+<p>Check for mobile device:</p>
+
+<pre>
+{{ "
+{{ craft.agent.isMobile() }}
+{{ craft.agent.isTablet() }}
+"}}
+</pre>
+
+<p>{{ craft.agent.isMobile() ? 'Is mobile' : 'Is NOT mobile' }}</p>
+<p>{{ craft.agent.isTablet() ? 'Is tablet' : 'Is NOT tablet' }}</p>
+
+<hr>
+
+<h3>Languages</h3>
+<p>Get the browser's accept languages. Example:</p>
+<pre>{{ "{{ craft.agent.languages() }}" }}</pre>
+<p>{{ dump(craft.agent.languages()) }}</p>
+
+<hr>
+
+<h3>Device name</h3>
+<p>Get the device name, if mobile. (iPhone, Nexus, AsusTablet, ...)</p>
+<pre>{{ "{{ craft.agent.device() }}" }}</pre>
+<p>{{ craft.agent.device() }}</p>
+
+<hr>
+
+<h3>Operating system name</h3>
+<p>Get the operating system. (Ubuntu, Windows, OS X, ...)</p>
+<pre>{{ "{{ craft.agent.platform() }}" }}</pre>
+<p>{{ craft.agent.platform() }}</p>
+
+<hr>
+
+<h3>Browser name</h3>
+<p>Get the browser name. (Chrome, IE, Safari, Firefox, ...)</p>
+<pre>{{ "{{ craft.agent.browser() }}" }}</pre>
+<p>{{ craft.agent.browser() ? 'Is desktop' : 'Is NOT desktop' }}</p>
+
+<hr>
+
+<h3>Desktop detection</h3>
+<p>Check if the user is using a desktop device.</p>
+<pre>{{ "{{ craft.agent.isDesktop() }}" }}</pre>
+<p>{{ craft.agent.isDesktop() ? 'Is phone' : 'Is NOT phone' }}</p>
+
+<hr>
+
+<h3>Phone detection</h3>
+<p>Check if the user is using a phone device.</p>
+<pre>{{ "{{ craft.agent.isPhone() }}" }}</pre>
+<p>{{ craft.agent.isPhone() ? 'Is phone' : 'Is NOT phone' }}</p>
+
+<hr>
+
+<h3>Robot detection</h3>
+<p>Check if the user is a robot. This uses jaybizzle/crawler-detect to do the actual robot detection.</p>
+<pre>{{ "{{ craft.agent.robot() }}" }}</pre>
+<p>{{ craft.agent.isRobot() }}</p>
+<p>{{ craft.agent.isRobot() ? 'Is robot' : 'Is NOT robot' }}</p>
+
+<hr>
+
+<h3>Browser/platform version</h3>
+<p>MobileDetect recently added a version method that can get the version number for components. To get the browser or platform version you can use:</p>
+<pre>
+{{"
+{% set browser = craft.agent.browser() %}
+{% set version = craft.agent.version(browser) %}
+
+{% set platform = craft.agent.platform() %}
+{% set version = craft.agent.version(platform) %}
+"}}
+</pre>
+
+{% set browser = craft.agent.browser() %}
+{% set version = craft.agent.version(browser) %}
+
+<p>
+Browser name: {{ browser }}<br>
+Browser version: {{ version }}
+</p>
+
+{% set platform = craft.agent.platform() %}
+{% set version = craft.agent.version(platform) %}
+
+<p>
+Platform name: {{ platform }}<br>
+Browser version: {{ version }}
+</p>
+
+{{ craft.agent }}

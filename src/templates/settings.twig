@@ -1,0 +1,89 @@
+{% import "_includes/forms" as forms %}
+
+{% set info = tag('button', {
+  class : 'information',
+  onClick : "event.preventDefault(); new Garnish.HUD(this, \'"~tag('img', {
+    style : { 'max-width' : '600px', 'width' : '100%' },
+    src   : 'https://i.imgur.com/7nAHn78.png',
+    alt   : 'agent.mn.js code example'
+  })~"\')"
+}) %}
+
+{% css %}
+
+.information {
+  vertical-align: bottom;
+  display: inline-block;
+  width: 1em;
+  height: 1.375em;
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  margin-left:0.5ch;
+}
+.information::before {
+    font-family: 'Craft';
+    content:'info';
+    font-feature-settings: "liga", "dlig";
+    text-rendering: optimizeLegibility;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    direction: ltr;
+    display: inline-block;
+    text-align: center;
+    font-style: normal;
+    vertical-align: middle;
+    word-wrap: normal !important;
+    user-select: none;
+    opacity: 0.8;
+    vertical-align: baseline;
+    width: 100%;
+    line-height: 1.375;
+    color: #606d7b;
+  }
+{% endcss %}
+
+{{ forms.lightswitchField({
+  label: 'Inject agent.min.js file into the document head' ~ info|raw,
+  instructions: 'Automatically inject a `<script>` tag into the document head. This defines global properties to the window element for the browser name and version, plus device types.',
+  name: 'injectAgentJsAsset',
+  id: 'injectAgentJsAsset',
+  on: settings.injectAgentJsAsset,
+}) }}
+
+
+<div class="field customEditableTable">
+
+  <div class="heading"><label>Symbol Routes</label></div>
+  <div class="instructions"><p>Define local route paths to the location your SVG files are stored</p></div>
+
+  {# {% if craft.agent.config.whitelist ?? false %}
+    <p id="live-warning" class="warning">
+      <span class="icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Warning: </span>
+      This is being overridden by the Agent config setting.
+    </p>
+  {% endif %} #}
+{# <pre>
+{{ dump(settings.whitelist) }}
+</pre> #}
+  {{ forms.editableTable({
+    id : 'whitelist',
+    placeholder: 'Environment variables and Aliases are supported',
+    name : 'whitelist',
+    cols : {
+      item: {
+        type: 'singleline',
+        heading: "White List",
+      }
+    },
+    addRowLabel : 'Add a user agent',
+    rows : settings.whitelist ?? [],
+    allowAdd: true,
+    allowDelete: true,
+    allowReorder: false,
+  }) }}
+
+</div>   
