@@ -9,6 +9,23 @@
   })~"\')"
 }) %}
 
+
+{% macro configWarning(setting, wrap) -%}
+  {% if craft.agent.config[setting] is defined %}
+    {% if wrap ?? true %}
+      <p id="live-warning" class="warning" style="display:block; position:relative; margin-bottom: 10px !important; margin-top:-10px">
+        <span class="icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Warning: </span>
+    {% endif %}
+      The "{{ setting }}" setting is being overridden by the Agent config setting.
+    {% if wrap ?? true %}
+      </p>
+    {% endif %}
+  {% endif %}
+{%- endmacro %}
+
+{% from _self import configWarning %}
+
 {% css %}
 
 .information {
@@ -49,41 +66,40 @@
   label: 'Inject agent.min.js file into the document head' ~ info|raw,
   instructions: 'Automatically inject a `<script>` tag into the document head. This defines global properties to the window element for the browser name and version, plus device types.',
   name: 'injectAgentJsAsset',
+  warning : configWarning('injectAgentJsAsset', false),
+  disabled : craft.agent.config['injectAgentJsAsset'] is defined,
   id: 'injectAgentJsAsset',
   on: settings.injectAgentJsAsset,
 }) }}
 
+{% set whitelist = {} %}
+  {% for item in settings.whitelist %}
+    {% set whitelist = whitelist|merge([{ item : item }]) %}
+  {% endfor %}
 
 <div class="field customEditableTable">
 
-  <div class="heading"><label>Symbol Routes</label></div>
-  <div class="instructions"><p>Define local route paths to the location your SVG files are stored</p></div>
+  <div class="heading"><label>User agent whitelist</label></div>
+  <div class="instructions">
+    <p>Add user agents in full or partially which will be matched to exlcude them from the <code>{{ "{{ craft.agent.check(...) }}" }}</code> method.</p>
+    {{ configWarning('whitelist') }}
+  </div>
 
-  {# {% if craft.agent.config.whitelist ?? false %}
-    <p id="live-warning" class="warning">
-      <span class="icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Warning: </span>
-      This is being overridden by the Agent config setting.
-    </p>
-  {% endif %} #}
-{# <pre>
-{{ dump(settings.whitelist) }}
-</pre> #}
   {{ forms.editableTable({
-    id : 'whitelist',
-    placeholder: 'Environment variables and Aliases are supported',
-    name : 'whitelist',
+    id           : 'whitelsit',
+    name         : 'whitelist',
+    addRowLabel  : 'Add a user agent',
+    allowAdd     : true,
+    allowDelete  : true,
+    allowReorder : false,
+    static : craft.agent.config['whitelist'] is defined,
+    rows         : whitelist,
     cols : {
-      item: {
-        type: 'singleline',
-        heading: "White List",
+      item : {
+        type    : 'singleline',
+        heading : "White List",
       }
-    },
-    addRowLabel : 'Add a user agent',
-    rows : settings.whitelist ?? [],
-    allowAdd: true,
-    allowDelete: true,
-    allowReorder: false,
+    }
   }) }}
 
 </div>   

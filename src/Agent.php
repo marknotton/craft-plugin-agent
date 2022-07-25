@@ -5,6 +5,7 @@ namespace marknotton\agent;
 use Craft;
 use craft\helpers\App;
 use craft\base\Plugin;
+use craft\services\Plugins;
 use craft\web\UrlManager;
 use craft\base\Model;
 use craft\web\twig\variables\CraftVariable;
@@ -57,6 +58,12 @@ class Agent extends Plugin {
         $variable = $event->sender;
         $variable->set('agent', self::$agent);
       }
+    );
+
+    Event::on(
+      self::class,
+      self::EVENT_BEFORE_SAVE_SETTINGS,
+      [Settings::class, 'onBeforeSaveSettings']
     );
 
     if (Craft::$app->request->isSiteRequest && self::getInstance()->settings->injectAgentJsAsset) {
