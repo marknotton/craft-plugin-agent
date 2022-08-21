@@ -1,0 +1,113 @@
+{% import "_includes/forms" as forms %}
+
+{% set info = tag('button', {
+  class : 'information',
+  onClick : "event.preventDefault(); new Garnish.HUD(this, \'"~tag('img', {
+    style : { 'max-width' : '600px', 'width' : '100%' },
+    src   : 'https://i.imgur.com/7nAHn78.png',
+    alt   : 'agent.mn.js code example'
+  })~"\')"
+}) %}
+
+{% macro configWarning(setting, wrap) -%}
+  {% if craft.agent.config[setting] is defined %}
+    {% if wrap ?? true %}
+      <p id="live-warning" class="warning" style="display:block; position:relative; margin-bottom: 10px !important; margin-top:-10px">
+        <span class="icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Warning: </span>
+    {% endif %}
+      The "{{ setting }}" setting is being overridden by the Agent config setting.
+    {% if wrap ?? true %}
+      </p>
+    {% endif %}
+  {% endif %}
+{%- endmacro %}
+
+{% from _self import configWarning %}
+
+{% css %}
+
+.information {
+  vertical-align: bottom;
+  display: inline-block;
+  width: 1em;
+  height: 1.375em;
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  margin-left:0.5ch;
+}
+.information::before {
+    font-family: 'Craft';
+    content:'info';
+    font-feature-settings: "liga", "dlig";
+    text-rendering: optimizeLegibility;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    direction: ltr;
+    display: inline-block;
+    text-align: center;
+    font-style: normal;
+    vertical-align: middle;
+    word-wrap: normal !important;
+    user-select: none;
+    opacity: 0.8;
+    vertical-align: baseline;
+    width: 100%;
+    line-height: 1.375;
+    color: #606d7b;
+  }
+
+  #settings-whitelsit tbody > tr:first-of-type a.delete { display:none; }
+
+{% endcss %}
+
+{{ forms.lightswitchField({
+  label: 'Inject agent.min.js file into the document head' ~ info|raw,
+  instructions: 'Automatically inject a `<script>` tag into the document head. This defines global properties to the window element for the browser name and version, plus device types.',
+  name: 'injectAgentJsAsset',
+  warning : configWarning('injectAgentJsAsset', false),
+  disabled : craft.agent.config['injectAgentJsAsset'] is defined,
+  id: 'injectAgentJsAsset',
+  on: settings.injectAgentJsAsset,
+}) }}
+
+{% set whitelist = {} %}
+{% for item in settings.whitelist %}
+  {% set whitelist = whitelist|merge([{ item : item }]) %}
+{% endfor %}
+
+<div class="field customEditableTable">
+  <div class="heading"><label>User agent whitelist</label></div>
+  <div class="instructions">
+    <p>Add user agents in full or partially which will be matched to exlcude them from the <code>{{ "{{ craft.agent.check(...) }}" }}</code> method.</p>
+    {{ configWarning('whitelist') }}
+  </div>
+
+  {% if whitelist is empty and craft.app.getVersion()|first == '3' %}
+    {% set whitelist = whitelist is empty ? { item : '' } %}
+    {% set minRows = 1 %}
+  {% endif %}
+
+  {% set config = {
+    id           : 'whitelsit',
+    name         : 'whitelist',
+    minRows      : minRows ?? null,
+    allowAdd     : true,
+    allowDelete  : true,
+    allowReorder : true,
+    static : craft.agent.config['whitelist'] is defined,
+    rows         : whitelist,
+    cols : {
+      item : {
+        type    : 'singleline',
+        heading : "Whitelist",
+      }
+    }
+  }%}
+
+  {{ forms.editableTable(config) }}
+
+</div>   
