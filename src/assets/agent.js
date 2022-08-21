@@ -1,7 +1,7 @@
 /**
-  * Agent by Jens Segers wrapper for querying user agent data. 
+  * Agent IIFE for querying the users device browser name, version and device type.
   *
-  * @author Mark Notton <mark@yello.studio>
+  * @author Mark Notton <mark@marknotton.uk>
   *
   * @link https://bitbucket.org/yellostudio/agent/src/master/
   * @link https://github.com/marknotton/craft-plugin-agent
@@ -19,9 +19,9 @@
   * limitations under the License.
   */
 
-(async function () {
+(function () {
 
-  let element, data = [];
+  let element, browserName, browserVersion, device
 
   if ( document.currentScript.dataset.browserName ) {
     element = document.currentScript
@@ -30,27 +30,25 @@
   }
 
   if ( element ) {
-    ['browserName', 'browserVersion', 'device'].forEach(key => data[key] = element.dataset[key])
-  } else {
-    await fetch('/api/agent').then(response => response.json()).then(response => { 
-      ['browserName', 'browserVersion', 'device'].forEach(key => data[key] = response[key])
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
 
-  if ( data.browserName && data.browserVersion ) {
-    window.browser = {
-      name    : document.documentElement.dataset.browserName = data.browserName,
-      version : document.documentElement.dataset.browserVersion = Number(data.browserVersion)
+    browserName    = element.dataset.browserName
+    browserVersion = element.dataset.browserVersion
+    device         = element.dataset.device
+
+    if ( browserName && browserVersion ) {
+      window.browser = {
+        name    : document.documentElement.dataset.browserName    = browserName,
+        version : document.documentElement.dataset.browserVersion = parseInt(browserVersion)
+      }
     }
-  }
 
-  if ( data.device ) {
-    window.device    = document.documentElement.dataset.device = data.device
-    window.isPhone   = data.device == 'phone'
-    window.isTablet  = data.device == 'tablet'
-    window.isDesktop = data.device == 'desktop'
+    if ( device ) {
+      window.device    = document.documentElement.dataset.device = device
+      window.isPhone   = device == 'phone'
+      window.isTablet  = device == 'tablet'
+      window.isDesktop = device == 'desktop'
+    }
+
   }
 
 })();

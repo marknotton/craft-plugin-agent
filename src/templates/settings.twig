@@ -9,7 +9,6 @@
   })~"\')"
 }) %}
 
-
 {% macro configWarning(setting, wrap) -%}
   {% if craft.agent.config[setting] is defined %}
     {% if wrap ?? true %}
@@ -60,6 +59,9 @@
     line-height: 1.375;
     color: #606d7b;
   }
+
+  #settings-whitelsit tbody > tr:first-of-type a.delete { display:none; }
+
 {% endcss %}
 
 {{ forms.lightswitchField({
@@ -73,33 +75,39 @@
 }) }}
 
 {% set whitelist = {} %}
-  {% for item in settings.whitelist %}
-    {% set whitelist = whitelist|merge([{ item : item }]) %}
-  {% endfor %}
+{% for item in settings.whitelist %}
+  {% set whitelist = whitelist|merge([{ item : item }]) %}
+{% endfor %}
 
 <div class="field customEditableTable">
-
   <div class="heading"><label>User agent whitelist</label></div>
   <div class="instructions">
     <p>Add user agents in full or partially which will be matched to exlcude them from the <code>{{ "{{ craft.agent.check(...) }}" }}</code> method.</p>
     {{ configWarning('whitelist') }}
   </div>
 
-  {{ forms.editableTable({
+  {% if whitelist is empty and craft.app.getVersion()|first == '3' %}
+    {% set whitelist = whitelist is empty ? { item : '' } %}
+    {% set minRows = 1 %}
+  {% endif %}
+
+  {% set config = {
     id           : 'whitelsit',
     name         : 'whitelist',
-    addRowLabel  : 'Add a user agent',
+    minRows      : minRows ?? null,
     allowAdd     : true,
     allowDelete  : true,
-    allowReorder : false,
+    allowReorder : true,
     static : craft.agent.config['whitelist'] is defined,
     rows         : whitelist,
     cols : {
       item : {
         type    : 'singleline',
-        heading : "White List",
+        heading : "Whitelist",
       }
     }
-  }) }}
+  }%}
+
+  {{ forms.editableTable(config) }}
 
 </div>   
