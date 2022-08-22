@@ -28,8 +28,7 @@
 * `/api/agent` endpoint.
 * ```{{ craft.agent.full }} ``` method. The individual ```{{ craft.agent.browser() }} ``` and ```{{ craft.agent.version() }}``` methods should suffice.
 * The magic method that managed the use of ```{{ craft.agent }}``` as a string. If you need the user agent, use ```{{ craft.agent.userAgent }}``` instead.
-* The plugin schemaVersion property, this should never have been added or updated in the way I was using it. This may flag up in your YAML changes and throw an error on existing projects. To fix this, [update the version from 2.0.3 to 1.0.0 in your `config/project/project.yaml` file:
-[fix yaml schemeVersion](https://i.imgur.com/xDGcsTN.png)
+* The plugin schemaVersion property, this should never have been added or updated in the way I was using it. This may flag up in your YAML changes and throw an error on existing projects. To fix this, update the version from 2.0.3 to 1.0.0 in your `config/project/project.yaml` file... [like this.](https://i.imgur.com/xDGcsTN.png)
 
 ## 1.2.0 - 2021-06-28  
 

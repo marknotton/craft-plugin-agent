@@ -79,14 +79,14 @@ If the User Agent contains any whitelist exceptions, even with partial matches, 
 You can mange the whitelist by creating an `agent.php` config file in your projects `configs` directory:
 ```php
 return [
-'userAgentWhitelist' => [
-	'APIs-Google',
-	'Mediapartners-Google',
-	'AdsBot-Google',
-	'Googlebot-Image',
-	'Googlebot',
-	'FeedFetcher-Google'
-	]
+  'userAgentWhitelist' => [
+    'APIs-Google',
+    'Mediapartners-Google',
+    'AdsBot-Google',
+    'Googlebot-Image',
+    'Googlebot',
+    'FeedFetcher-Google'
+  ]
 ];
 ```
 or via the CMS plugin settings:
@@ -174,14 +174,14 @@ There is a small [IIFE](https://en.wikipedia.org/wiki/Immediately_invoked_functi
 
 This will define global properties to the window object for the browser name, version, and different device types.
 
-|  |  |
-|--|--|
-| `window.browser.name` | string |
-| `window.browser.version` | int |
-| `window.device` | string |
-| `window.isPhone` | bool |
-| `window.isTable` | bool |
-| `window.isDesktop` | bool |
+|                          |        |
+|--------------------------|--------|
+| `window.browser.name`    | string |
+| `window.browser.version` | int    |
+| `window.device`          | string |
+| `window.isPhone`         | bool   |
+| `window.isTable`         | bool   |
+| `window.isDesktop`       | bool   |
 
 Alternatively you can register the the agent.min.js asset manually:
 
@@ -194,6 +194,6 @@ Php:
 Agent::registerAgentJsFile(<useCompressedFile:bool>, <position:string>);
 ```
 
-## Change Log & Breaking Changes
+## Changelog & breaking changes
 
 There have been many changes since the previous version of Agent 1.2.0. Some for performance, some for sanity. Arguably some practices used in the previous version were over engineered for no obvious gains. These changes could be breaking, that require small syntax tweaks to resolve on older projects. [Please review the "4.0.0 - 2022-09-11" change log for suggestions and fixes.](https://github.com/marknotton/craft-plugin-agent/blob/master/CHANGELOG.md#400---2022-09-11)  
