@@ -1,6 +1,14 @@
-  
-
 # Agent Changelog
+
+## 5.0.0 - 2024-24-02
+
+### Removed
+
+* Deprecated methods. Specifically the setAttributesToHTML methods.
+
+### Added
+
+* Support for Craft 5. Literally no changes were required. Just the composer tags to let Craft know it's supported. 
 
 ## 4.0.0 - 2022-09-11
 

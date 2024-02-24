@@ -175,17 +175,4 @@ class Variable extends JenssegersAgent {
     }
   }
 
-  /**
-   * Build data attribute markup
-   * @deprecated Bad practice to inline html attrtibutes, use Crafts 'attr' Twig extension method 
-   * @example <html {{ attr({ data : craft.agent.commonData() })}}>
-   * @example <html {{ craft.agent.data() }}>
-   * @return Markup
-   */
-  public function data(): Markup 
-  {
-    $attributesAsString = Html::renderTagAttributes($this->commonData('data-'));
-    return Template::raw($attributesAsString);
-  }
-
 }

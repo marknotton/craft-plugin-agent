@@ -72,50 +72,6 @@ class Agent extends Plugin {
   }
 
   /**
-   * This allows the Agent plugin to modify the <html> attribute even on cached templates. 
-   * We do this very early on to avoid any flashes of unstyled content that would 
-   * othersie be handled with Javascript.
-   * @example 'on afterRequest' => 'marknotton\agent\Agent::setAttributesToHTML'
-   * @todo This no longer works on Craft 4. Craft::$app->response->data returns nothing.
-   */
-  public static function setAttributesToHTML(): void  
-  {
-
-    if(Craft::$app->request->isSiteRequest) {
-
-      if ( version_compare(Craft::$app->getVersion(), '4.0', '>=') ) {
-
-        throw new \Exception('The "setAttributesToHTML" method doesn\'t currently work in Craft 4.0 or above. This is under review.');
-
-      } else {
-
-        $html = &Craft::$app->response->data;
-
-        // VarDumper::dump([
-        //   'name' => get_class(Craft::$app->response),
-        //   'methods' => get_class(Craft::$app->response),
-        //   'properties' => get_object_vars(Craft::$app->response)
-        // ]); die;
-
-        if ( !empty($html) && is_string($html)) { 
-      
-          preg_match('/<html.*?>/m', $html, $matches);
-      
-          if ( !empty($matches) ) { 
-      
-            // Only looking for the first tag found. 
-            $oldTag = $matches[0]; 
-            
-            $newTag = Html::modifyTagAttributes($oldTag, self::$agent->commonData('data-'));
-      
-            $html = str_replace($oldTag, $newTag, $html);
-          }
-        }
-      }
-    }
-  }
-
-  /**
    * This magic method adds a little syntax suger to querying agent. Both of
    * these example will call the same method.
    * @example Agent::$agent->browser()

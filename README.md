@@ -131,39 +131,24 @@ Redirect users to a new template/url if the user agent doesn't match any of the 
 {{ craft.agent.redirect(criteria, 'no-support.twig', 302) }}
 ```
 
-## Set user agent data attributes in `<html>` tag 
+### Data
 
-> UPDATE - August 2022: The **setAttributesToHTML** method only works on Craft 3. Support for Craft 4 is under review.
+To set the user agents device name, version and device type directly to an element. Use Crafts [attr method](https://craftcms.com/docs/4.x/dev/functions.html#attr) to render common data attributes. 
 
-To set the user agents device name, version and device type directly to the `<html>` element after the template has rendered, you can define the **setAttributesToHTML** method in your `config/app.php` file.
-
-```php
-'on afterRequest' => 'marknotton\agent\Agent::setAttributesToHTML'
+```twig
+<html {{ attr({ data : craft.agent.commonData() })}}>
 ```
+
 The end result will look like something like this:
 
 ```html
 <html data-browser-name="chrome" data-browser-version="103" data-device="desktop">
 ```
+
 *But why would you want this?* This opens up some options for browser specific styling within your CSS; and this server side approach will omit flashes of unstyled content (FOUC) or layout shifts because styling rules aren't dependant on Javascript during page load. This means you can confidently use something like this in your CSS:
 
 ```css
 html[data-browser-name="safari"] article img { ... }
-```
-
-### Data
-
-> Deprecation Warning: This method will be removed in a future release. 
-
-This agent property returns the same ***setAttributesToHTML*** data attributes as a `string`
-
-```twig
-<html {{ craft.agent.data }}>
-```
-Assigning a string of attributes isn't ideal due to template caching patterns which could mean cached data attributes. I suggest using Crafts own [attr method](https://craftcms.com/docs/4.x/dev/functions.html#attr)  if you're not caching the `<html>` tag:
-
-```twig
-<html {{ attr({ data : craft.agent.commonData() })}}>
 ```
 
 ## agent.js
